@@ -1,0 +1,47 @@
+{
+  "environment": "../src/environment/heist_buf.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "sampler": {
+    "name": "FlattenedPolledSampler",
+    "collect_abstract": false,
+    "collect_inhibited": false,
+    "derived_samples_hierarchy": "../src/environment/actionhierarchy/heist/heist.json",
+    "save_name": "heist_target.list"
+
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 1.0
+  },
+  "callbacks": [
+
+  ],
+  "episodes": -1,
+  "samples_target": 1000000,
+  "episode_max_length": 10000,
+  "eval_samples" : -1,
+  "eval_num_samples": [5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000, 60000, 70000, 80000, 90000, 100000, 150000, 200000, 250000, 750000, 1000000],
+  "save_samples": false,
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 1.0,
+  "save_traj": false,
+  "keep_policy": true,
+  "novel_states_count": false,
+  "kl_divergence": [5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000, 60000, 70000, 80000, 90000, 100000, 150000, 200000, 250000, 300000, 350000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000],
+  "kl_only": true
+}

@@ -1,0 +1,45 @@
+{
+  "environment": "../src/environment/heist_laser_tdf.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "sampler": {
+    "name": "FlattenedPolledSampler",
+    "collect_abstract": true,
+    "collect_inhibited": true,
+    "derived_samples_hierarchy": "../src/environment/actionhierarchy/heist_laser/heist_laser.json"
+
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 1.0
+  },
+  "callbacks": [
+
+  ],
+  "episodes": -1,
+  "samples_target": 70000,
+  "episode_max_length": 70000,
+  "eval_samples" : -1,
+  "eval_num_samples": [10000, 20000, 30000, 40000, 50000, 60000, 70000],
+  "save_samples": true,
+  "samples_name": "laser_tdf",
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 1.0,
+  "save_traj": false,
+  "keep_policy": true,
+  "novel_states_count": false
+}

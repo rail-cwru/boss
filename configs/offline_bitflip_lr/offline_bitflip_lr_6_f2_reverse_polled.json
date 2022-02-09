@@ -1,0 +1,41 @@
+{
+  "environment": "../../src/environment/bitflip_6_offline_f2_reverse.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "sampler": {
+    "name": "PolledSampler",
+    "collect_abstract": true,
+    "collect_inhibited": true
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 1.0
+  },
+  "callbacks": [
+
+  ],
+  "episodes": -1,
+  "samples_target": 20000,
+  "episode_max_length": 1250,
+  "eval_samples" : -1,
+  "eval_num_samples": [250, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 10000, 12000, 14000, 16000, 18000, 20000],
+  "save_samples": false,
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 0.50,
+  "save_traj": false,
+  "keep_policy": true
+}

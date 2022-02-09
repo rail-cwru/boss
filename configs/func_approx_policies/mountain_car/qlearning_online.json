@@ -1,0 +1,39 @@
+{
+  "environment": {
+    "name" : "MountainCar"
+  },
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "policy_sampler": {
+      "name": "DiscreteEGreedy",
+      "epsilon": 1.0,
+      "decay": 0.99,
+      "min_epsilon": 0.01
+    },
+    "function_approximator": {
+      "name": "DenseNeuralNet",
+      "structure": [
+        [24, "relu"],
+        [24, "relu"]
+      ],
+      "optimizer": "adam"
+    }
+  },
+  "algorithm": {
+    "name": "QLearning",
+    "is_online": true,
+    "learning_rate": 0.01,
+    "discount_factor": 0.95,
+    "memory_size": 1000,
+    "batch_size": 128,
+    "update_interval": 1
+  },
+  "callbacks": [
+    {"name": "Evaluate", "eval_num": 10, "timestep": 25, "visualize": false}
+  ],
+  "episodes": 40000,
+  "episode_max_length": 200
+}

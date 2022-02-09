@@ -1,0 +1,53 @@
+{
+  "environment": "../../src/environment/bitflip_6_offline.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+   "sampler": {
+     "name": "MultiSampler",
+     "collect_abstract": true,
+     "collect_inhibited": true,
+     "min_reward": -50,
+     "ucb_coef": 4.0,
+     "samplers_list": [
+       "HUF",
+       "Polled",
+       "TDF_1",
+       "BUF_2"
+     ]
+   },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 1.0
+  },
+
+  "callbacks": [
+
+  ],
+  "episodes": -1,
+  "samples_target": 15000,
+  "episode_max_length": 1250,
+  "eval_samples" : -1,
+  "eval_num_samples": [800, 1600, 2400, 3200, 4000, 4800, 6000, 7000, 8000, 10000, 15000],
+  "save_samples": true,
+  "samples_name":  "bitflip_multi_jump_800",
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 1.0,
+  "save_traj": false,
+  "keep_policy": true,
+  "steps_per_sampler": 200,
+  "plot_multi": true
+}
