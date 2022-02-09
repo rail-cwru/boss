@@ -1,0 +1,50 @@
+{
+  "environment": {
+    "name" : "Cartpole"
+  },
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "policy_sampler": {
+      "name": "DiscreteEGreedy",
+      "epsilon": 1.0,
+      "min_epsilon": 0.01,
+      "decay": 0.995
+    },
+    "function_approximator": {
+      "name": "DenseNeuralNet",
+      "structure": [
+        [24, "relu"],
+        [24, null]
+      ],
+      "optimizer": "adam"
+    }
+  },
+  "algorithm": {
+    "name": "QLearning",
+    "is_online": true,
+    "learning_rate": 0.001,
+    "discount_factor": 0.95,
+    "memory_size": 1000000,
+    "batch_size":20,
+    "update_interval": 1
+  },
+  "callbacks": [
+    {
+      "name": "Evaluate", 
+      "eval_num": 10,
+      "timestep": 1,
+      "visualize": false,
+      "output_reward_file": "experiments\\hyperparameter_tuning\\results\\cartpole\\rb\\qlearning_online\\{}\\eval_{}.csv"
+    },
+    {
+      "name": "SaveReward",
+      "file_location": "experiments\\hyperparameter_tuning\\results\\cartpole\\rb\\qlearning_online\\{}\\train_{}.csv"
+    }
+  ],
+  "episodes": 5000,
+  "episode_max_length": 500,
+  "seed": 2
+}

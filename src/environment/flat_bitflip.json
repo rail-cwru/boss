@@ -1,0 +1,5 @@
+{
+  "name": "BitFlipMiddle",
+  "action_hierarchy": "./actionhierarchy/flat.json",
+  "num_bits": 8
+}

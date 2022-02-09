@@ -1,0 +1,12 @@
+{
+  "coeff": ["cummax_", "len_"],
+  "title": "Heist: Rewards vs. Samples Collected",
+  "save_title": "6_heist_multi_deep.png",
+  "to_plot" : [ ["heist_multi_deep/heist_buf3", "master", "BUF3"],
+                ["heist_multi_deep/heist_tdf5_10_16_no_npy", "master", "TDF5"],
+                ["heist_multi_deep/heist_huf_10_16_no_npy", "master", "HUF"],
+                [ "heist_multi_deep/heist_multi_deep_combined", "master", "BOSS"],
+                ["heist_multi_deep/heist_polled", "master", "Polled"]
+
+           ]
+}

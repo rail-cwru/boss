@@ -1,0 +1,538 @@
+{
+  "state_variables": [
+    "agent_loc",
+    "blue_key_loc",
+    "orange_key_loc",
+    "green_key_loc",
+    "blue_lock_loc",
+    "green_lock_loc",
+    "orange_lock_loc",
+    "gem_loc"
+  ],
+  "actions": {
+    "Root": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_key_loc",
+        "orange_key_loc",
+        "green_key_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ],
+      "params": {},
+      "parents": [],
+      "children": {
+        "Pickup_gem": [],
+        "Navigate_Gem": ["Gem"],
+        "Unlock_Orange": []
+      },
+      "termination": [
+        "gem_loc == 1 AND orange_lock_loc == 1 AND orange_key_loc == 1 AND green_lock_loc == 1 AND green_key_loc == 1 AND blue_lock_loc == 1 AND blue_key_loc == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Unlock_Orange": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_key_loc",
+        "orange_key_loc",
+        "green_key_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ],
+      "params": {},
+      "parents": [
+        "Root"
+      ],
+      "children": {
+        "Open_O": [],
+        "Navigate_OL": ["Orange_L"],
+        "Get_Orange_Key": []
+      },
+      "termination": [
+        "orange_lock_loc == 1 AND orange_key_loc == 1 AND green_lock_loc == 1 AND green_key_loc == 1 AND blue_lock_loc == 1 AND blue_key_loc == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Get_Orange_Key": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_key_loc",
+        "orange_key_loc",
+        "green_key_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ],
+      "params": {},
+      "parents": [
+        "Unlock_Orange"
+      ],
+      "children": {
+        "Pickup_orange": [],
+        "Navigate_OK": ["Orange_K"],
+        "Unlock_Green": []
+      },
+      "termination": [
+        "orange_key_loc == 1 AND green_lock_loc == 1 AND green_key_loc == 1 AND blue_lock_loc == 1 AND blue_key_loc == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Unlock_Green": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_key_loc",
+        "orange_key_loc",
+        "green_key_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ],
+      "params": {},
+      "parents": [
+        "Get_Orange_Key"
+      ],
+      "children": {
+        "Navigate_GL": [
+          "Green_L"
+        ],
+        "Open_G": [],
+        "Get_Green_Key": []
+      },
+      "termination": [
+        "green_lock_loc == 1 AND green_key_loc == 1 AND blue_lock_loc == 1 AND blue_key_loc == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Get_Green_Key": {
+      "primitive": false,
+      "state_variables": [
+       "agent_loc",
+        "blue_key_loc",
+        "orange_key_loc",
+        "green_key_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ],
+      "params": {},
+      "parents": [
+        "Unlock_Green"
+      ],
+      "children": {
+        "Navigate_GK": [
+          "Green_K"
+        ],
+        "Pickup_green": [],
+        "Unlock_Blue": []
+      },
+      "termination": [
+        "green_key_loc == 1 AND blue_lock_loc == 1 AND blue_key_loc == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Unlock_Blue": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_key_loc",
+        "orange_key_loc",
+        "green_key_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ],
+      "params": {},
+      "parents": [
+        "Get_Green_Key"
+      ],
+      "children": {
+        "Get_Blue_Key": [],
+        "Navigate_BL": [
+          "Blue_L"
+        ],
+        "Open_B": []
+      },
+      "termination": [
+        "blue_lock_loc == 1 AND blue_key_loc == 1 AND blue_key_loc == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Get_Blue_Key": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_key_loc",
+        "orange_key_loc",
+        "green_key_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ],
+      "params": {},
+      "parents": [
+        "Unlock_Blue"
+      ],
+      "children": {
+        "Pickup_blue": [],
+        "Navigate_BK": [
+          "Blue_K"
+        ]
+      },
+      "termination": [
+        "blue_key_loc == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_OL": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "green_lock_loc"
+      ],
+      "params": {
+        "target": [
+          "Orange_L"
+        ]
+      },
+      "parents": [
+        "Unlock_Orange"
+      ],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "agent_loc == target",
+        "green_lock_loc == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_OK": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "green_lock_loc"
+      ],
+      "params": {
+        "target": [
+          "Orange_K"
+        ]
+      },
+      "parents": [
+        "Get_Orange_Key"
+      ],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "agent_loc == target",
+        "green_lock_loc == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_GL": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_lock_loc"
+      ],
+      "params": {
+        "target": [
+          "Green_L"
+        ]
+      },
+      "parents": [
+        "Unlock_Green"
+      ],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "agent_loc == target",
+        "blue_lock_loc == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_GK": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_lock_loc"
+      ],
+      "params": {
+        "target": [
+          "Green_K"
+        ]
+      },
+      "parents": [
+        "Get_Green_Key"
+      ],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "agent_loc == target",
+        "blue_lock_loc == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_BL": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc"
+      ],
+      "params": {
+        "target": [
+          "Blue_L"
+        ]
+      },
+      "parents": [
+        "Unlock_Blue"
+      ],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "agent_loc == target"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_BK": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc"
+      ],
+      "params": {
+        "target": [
+          "Blue_K"
+        ]
+      },
+      "parents": [
+        "Get_Blue_Key"
+      ],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "agent_loc == target"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_Gem": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "orange_lock_loc"
+      ],
+      "params": {
+        "target": [
+          "Gem"
+        ]
+      },
+      "parents": [
+        "Root"
+      ],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "agent_loc == target",
+        "orange_lock_loc == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Pickup_orange": {
+      "primitive": true,
+      "parents": [
+        "Get_Orange_Key"
+      ]
+    },
+    "Open_O": {
+      "primitive": true,
+      "parents": [
+        "Unlock_Orange"
+      ]
+    },
+    "Pickup_green": {
+      "primitive": true,
+      "parents": [
+        "Get_Green_Key"
+      ]
+    },
+    "Open_G": {
+      "primitive": true,
+      "parents": [
+        "Unlock_Green"
+      ]
+    },
+    "Pickup_blue": {
+      "primitive": true,
+      "parents": [
+        "Get_Blue_Key"
+      ]
+    },
+    "Pickup_gem": {
+      "primitive": true,
+      "parents": [
+        "Root"
+      ]
+    },
+    "Open_B": {
+      "primitive": true,
+      "parents": [
+        "Unlock_Blue"
+      ]
+    },
+    "North": {
+      "primitive": true,
+      "parents": [
+        "Navigate_OK",
+        "Navigate_GK",
+        "Navigate_BK",
+        "Navigate_OL",
+        "Navigate_GL",
+        "Navigate_BL",
+        "Navigate_Gem"
+      ],
+      "state_variables": [
+        "agent_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ]
+    },
+    "East": {
+      "primitive": true,
+      "parents": [
+        "Navigate_OK",
+        "Navigate_GK",
+        "Navigate_BK",
+        "Navigate_OL",
+        "Navigate_GL",
+        "Navigate_BL",
+        "Navigate_Gem"
+      ],
+      "state_variables": [
+        "agent_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ]
+    },
+    "South": {
+      "primitive": true,
+      "parents": [
+        "Navigate_OK",
+        "Navigate_GK",
+        "Navigate_BK",
+        "Navigate_OL",
+        "Navigate_GL",
+        "Navigate_BL",
+        "Navigate_Gem"
+      ],
+      "state_variables": [
+        "agent_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ]
+    },
+    "West": {
+      "primitive": true,
+      "parents": [
+        "Navigate_OK",
+        "Navigate_GK",
+        "Navigate_BK",
+        "Navigate_OL",
+        "Navigate_GL",
+        "Navigate_BL",
+        "Navigate_Gem"
+      ],
+      "state_variables": [
+        "agent_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ]
+    }
+  },
+  "primitive_action_map": {
+    "Pickup_blue": 4,
+    "Pickup_green": 5,
+    "Pickup_orange": 6,
+    "Pickup_gem": 7,
+    "Open_B": 8,
+    "Open_G": 9,
+    "Open_O": 10,
+    "North": 0,
+    "South": 1,
+    "East": 2,
+    "West": 3
+  }
+}

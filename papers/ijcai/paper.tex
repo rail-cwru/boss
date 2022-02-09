@@ -1,0 +1,132 @@
+%%%% ijcai19-multiauthor.tex
+
+\typeout{IJCAI-19 Multiple authors example}
+
+% These are the instructions for authors for IJCAI-19.
+
+\documentclass{article}
+\pdfpagewidth=8.5in
+\pdfpageheight=11in
+% The file ijcai19.sty is NOT the same than previous years'
+\usepackage{ijcai19}
+
+% Use the postscript times font!
+\usepackage{times}
+\usepackage{soul}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[small]{caption}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\urlstyle{same}
+
+% the following package is optional:
+%\usepackage{latexsym} 
+
+% Following comment is from ijcai97-submit.tex:
+% The preparation of these files was supported by Schlumberger Palo Alto
+% Research, AT\&T Bell Laboratories, and Morgan Kaufmann Publishers.
+% Shirley Jowell, of Morgan Kaufmann Publishers, and Peter F.
+% Patel-Schneider, of AT\&T Bell Laboratories collaborated on their
+% preparation.
+
+% These instructions can be modified and used in other conferences as long
+% as credit to the authors and supporting agencies is retained, this notice
+% is not changed, and further modification or reuse is not restricted.
+% Neither Shirley Jowell nor Peter F. Patel-Schneider can be listed as
+% contacts for providing assistance without their prior permission.
+
+% To use for other conferences, change references to files and the
+% conference appropriate and use other authors, contacts, publishers, and
+% organizations.
+% Also change the deadline and address for returning papers and the length and
+% page charge instructions.
+% Put where the files are available in the appropriate places.
+
+\title{Graph-based Transfer Techniques in Coordination Graph RL}
+
+\author{ % what will be our order?
+First Author\footnote{Contact Author}\and
+Second Author
+\affiliations
+Case Western Reserve University\\
+\emails  % order?
+\{first, second\}@case.edu
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+ABSTRACT HERE
+\end{abstract}
+
+\section{Introduction} % (fold)
+\label{sec:introduction}
+
+Introduction here.
+
+% section introduction (end)
+
+\section{Background and Related Work} % (fold)
+\label{sec:background_and_related_work}
+
+...MARL in general...
+
+...Coordination Graph Learning by Guestrin et al....
+
+...Transfer Methods (Julie Kaplan)...
+
+% section background_and_related_work (end)
+
+\section{Deletion Transfer} % (fold)
+\label{sec:deletion_transfer}
+
+...the 4 existing basis transfer methods...
+
+% (*new) ...delete and connect-map instead of clique...
+
+...proxy deletion via monte carlo expected reward after deletion...
+
+(we should consider how to train on original policies with the modified policies)
+
+(we should consider the influence of the policy representation on how this works)
+
+% section deletion_transfer (end)
+
+\section{Addition Transfer} % (fold)
+\label{sec:addition_transfer}
+
+...problem of where to add in the graph...
+
+...no supergraphs / exponential supergraphs...
+
+(*) ...using the expected reward after deletion as heuristic for load...
+
+(*) ...partition and mirror / partition and copy...
+
+...heuristic-free methods (e.g. L1 norm of policy weights / mean activation)
+
+% section addition_transfer (end)
+
+\section{Experimental Results} % (fold)
+\label{sec:experimental_results}
+
+...domain 1 and 2...
+
+...graphs...
+
+...visualizations and charts etc go here...
+
+% section experimental_results (end)
+
+\section{Conclusion} % (fold)
+\label{sec:conclusion}
+
+% section conclusion (end)
+
+\end{document}
+

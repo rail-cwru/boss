@@ -1,0 +1,5 @@
+{
+  "name": "IkeaChairPlane",
+  "action_hierarchy": "./actionhierarchy/flat.json",
+  "single_putdown": false
+}

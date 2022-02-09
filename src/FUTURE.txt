@@ -1,0 +1,65 @@
+Future work.
+
+Unallocated Future General RL Topics to investigate implementation over:
+    Proximal Policy Optimization (https://arxiv.org/abs/1707.06347)
+    Rainbow (https://arxiv.org/pdf/1710.02298.pdf) (And by proxy, most of a DQN-RL suite)
+        Dueling Q (https://arxiv.org/pdf/1511.06581.pdf)
+        Double Q
+        Asychronous Workers
+        Advantage Learning
+        Action-Critic
+        Prioritized Experience Replay
+    World Models (https://worldmodels.github.io/)
+    Curiosity-Driven Exploration / "Noreward-RL"
+
+Unallocated Future MARL Topics:
+    Deep Coordination: https://www.fransoliehoek.net/docs/VanDerPol16LICMAS.pdf
+    IDQN-MADQN: http://cs231n.stanford.edu/reports/2016/pdfs/122_Report.pdf
+    Local State Parametrisation / Dynamic Allocation on Fixed Coordination
+        Novel: Gumbel-softmax switching over potential locations?
+    https://scss.tcd.ie/publications/theses/diss/2018/TCD-SCSS-DISSERTATION-2018-029.pdf
+    Competitive MARL: Reusing Skills in POEs
+        https://www.borealisai.com/media/filer_public/a0/74/a074c698-95f6-406d-b55f-5183e1894b0e/latinx_5.pdf
+
+Algorithms:
+    Forward TD-Lambda (https://arxiv.org/pdf/1608.05151.pdf)
+    Any continuous methods
+    DQN With forward elig? https://pdfs.semanticscholar.org/fae2/3c8b0280fdc6488d8105d793d60d85e27491.pdf
+
+FunctionApproximator:
+    Verify Multilayer Perceptron (?)
+    Tabular (Should require some form of indexed observations)
+
+Callbacks:
+    Binning (Must be used somehow in init phase.)
+    Init Phase Interaction (esp. for "connectors" such as Binning)
+
+Environments:
+    Add noise option config to GridWorld
+    Make agents blocking in GridWorld
+    ResourceCollection (To Complete)
+        Multiagent Planning and Addition
+    Atari
+        Classical RL Suite
+    ContinuousTag
+        Continuous analogue of PredatorPrey
+    TreadStack (Novel)
+        Homogeneous multiagent with meaningful add/drop cases.
+    Traffic Control
+        Heterogenous multi-agent with partial observability and meaningful add/drop cases.
+    Space Fortress (https://arxiv.org/pdf/1809.02206.pdf)
+        For context learning
+    MultiSnake
+        For homogeneous multiagent
+    Pommerman (OpenAI available?)
+        Competitive
+
+Structural
+    Environments should offer varied observations for varied algorithms.
+        Do we have it backwards?
+        Current schema: Environment offers configurable observations. User chooses appropriate modules.
+        Possible schema: User chooses learners. Environment, if possible, provides relevant observations.
+
+    Should Models extend ModuleFrame?
+
+    Determine parallel evaluation of PolicyGroups from agentsystems.

@@ -1,0 +1,149 @@
+{
+  "state_variables": [
+    "taxi_loc",
+    "passenger_loc",
+    "destination"
+  ],
+  "actions": {
+    "Root": {
+      "primitive": false,
+      "state_variables": [
+        "taxi_loc",
+        "passenger_loc",
+        "destination"
+      ],
+      "params": {},
+      "parents": [],
+      "children": {
+        "Get": [],
+        "Put": []
+      },
+      "termination": [
+        "ALL p: passenger_loc[p] == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Get": {
+      "primitive": false,
+      "state_variables": [
+        "taxi_loc",
+        "passenger_loc"
+      ],
+      "params": {},
+      "parents": [
+        "Root"
+      ],
+      "children": {
+        "Pickup": [],
+        "Navigate": [
+          "source"
+        ]
+      },
+      "termination": [
+        "EXISTS p: passenger_loc[p] == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Put": {
+      "primitive": false,
+      "state_variables": [
+        "taxi_loc",
+        "destination",
+        "passenger_loc"
+      ],
+      "params": {},
+      "parents": [
+        "Root"
+      ],
+      "children": {
+        "Putdown": [],
+        "Navigate": [
+          "destination"
+        ]
+      },
+      "termination": [
+        "EXISTS p: destination[p] == taxi_loc AND passenger_loc[p] == 1",
+        "ALL p: passenger_loc[p] != 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate": {
+      "primitive": false,
+      "state_variables": [
+        "taxi_loc"
+      ],
+      "params": {
+        "target": [
+          "source",
+          "destination"
+        ]
+      },
+      "parents": [
+        "Get",
+        "Put"
+      ],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "taxi_loc == target"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Pickup": {
+      "primitive": true,
+      "parents": [
+        "Get"
+      ]
+    },
+    "Putdown": {
+      "primitive": true,
+      "parents": [
+        "Put"
+      ]
+    },
+    "North": {
+      "primitive": true,
+      "parents": [
+        "Navigate"
+      ]
+    },
+    "South": {
+      "primitive": true,
+      "parents": [
+        "Navigate"
+      ]
+    },
+    "East": {
+      "primitive": true,
+      "parents": [
+        "Navigate"
+      ]
+    },
+    "West": {
+      "primitive": true,
+      "parents": [
+        "Navigate"
+      ]
+    }
+  },
+  "primitive_action_map": {
+    "Pickup": 4,
+    "Putdown": 5,
+    "North": 0,
+    "South": 1,
+    "East": 2,
+    "West": 3
+  }
+}

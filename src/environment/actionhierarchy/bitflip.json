@@ -1,0 +1,71 @@
+{
+  "state_variables": [
+    "bit",
+    "i_zero",
+    "all_bits_to_left"
+  ],
+  "actions": {
+    "Root": {
+      "primitive": false,
+      "state_variables": [
+        "i_zero",
+        "all_bits_to_left"
+      ],
+      "params": {},
+      "parents": [],
+      "children": {
+        "Clear": [
+          "bit"
+        ]
+      },
+      "termination": [
+        "All p: bit[p] == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Flip": {
+      "primitive": true,
+      "parents": [
+        "Clear"
+      ]
+    },
+    "Clear": {
+      "primitive": false,
+      "state_variables": [
+        "i_zero",
+        "all_bits_to_left"
+      ],
+      "params": {},
+      "parents": [
+        "Root"
+      ],
+      "children": {
+        "Clear": [
+          "bit"
+        ],
+        "Flip": [
+          "bit"
+        ]
+      },
+      "termination": [
+        "all_bits_to_left == 0",
+        "i_zero == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    }
+  },
+  "dynamic": ["bit", "descending"],
+  "primitive_action_map": {
+    "North": 0,
+    "South": 1,
+    "East": 2,
+    "West": 3,
+    "MineGold": 4,
+    "ChopWood": 5,
+    "Deposit": 6
+  }
+}

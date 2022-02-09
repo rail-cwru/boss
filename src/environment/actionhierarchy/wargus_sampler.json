@@ -1,0 +1,234 @@
+{
+  "state_variables": [
+    "location",
+    "resource",
+    "meet_gold_requirement",
+    "meet_wood_requirement",
+    "wood_remaining",
+    "gold_remaining"
+  ],
+  "actions": {
+    "Root": {
+      "primitive": false,
+      "state_variables": [
+        "location",
+        "resource",
+        "meet_gold_requirement",
+        "meet_wood_requirement",
+        "wood_remaining",
+        "gold_remaining"
+      ],
+      "params": {},
+      "parents": [],
+      "children": {
+        "GetGold": [],
+        "GetWood": [],
+        "GWDeposit": []
+      },
+      "termination": [
+        "meet_gold_requirement == 1 AND meet_wood_requirement == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "GetGold": {
+      "primitive": false,
+      "state_variables": [
+        "location",
+        "resource",
+        "gold_remaining"
+      ],
+      "params": {},
+      "parents": ["Root"],
+      "children": {
+        "MineGold": [],
+        "GotoGold": [
+          "gold_loc"
+        ]
+      },
+      "termination": [
+        "resource == 1",
+        "resource == 2",
+        "ALL p: gold_remaining[p] == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "GetWood": {
+      "primitive": false,
+      "state_variables": [
+        "location",
+        "resource",
+        "wood_remaining"
+      ],
+      "params": {},
+      "parents": ["Root"],
+      "children": {
+        "ChopWood": [],
+        "GotoWood": [
+          "wood_loc"
+        ]
+      },
+      "termination": [
+        "resource == 2",
+        "resource == 1",
+        "ALL p: wood_remaining[p] == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "GWDeposit": {
+      "primitive": false,
+      "state_variables": [
+        "location",
+        "resource",
+        "meet_gold_requirement",
+        "meet_wood_requirement"
+      ],
+      "params": {},
+      "parents": ["Root"],
+      "children": {
+        "Deposit": [],
+        "GotoDeposit": [
+          "townhall_loc"
+        ]
+      },
+      "termination": [
+        "resource == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "GotoGold": {
+      "primitive": false,
+      "state_variables": [
+        "location"
+      ],
+      "params": {
+        "target": [
+          "gold_loc"
+        ]
+      },
+      "parents": ["GetGold"],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "location == target"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "GotoWood": {
+      "primitive": false,
+      "state_variables": [
+        "location"
+      ],
+      "params": {"target": [
+          "wood_loc"
+        ]},
+      "parents": ["GetWood"],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "location == target"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "GotoDeposit": {
+      "primitive": false,
+      "state_variables": [
+        "location"
+      ],
+      "params": {"target": [
+          "townhall_loc"
+        ]},
+      "parents": ["GWDeposit"],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "location == target"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "MineGold": {
+      "primitive": true,
+      "parents": [
+        "GetGold"
+      ]
+    },
+    "ChopWood": {
+      "primitive": true,
+      "parents": [
+        "GetWood"
+      ]
+    },
+    "Deposit": {
+      "primitive": true,
+      "parents": [
+        "GWDeposit"
+      ]
+    },
+    "North": {
+      "primitive": true,
+      "parents": [
+        "GotoGold",
+        "GotoWood",
+        "GotoDeposit"
+      ]
+    },
+    "South": {
+      "primitive": true,
+      "parents": [
+        "GotoGold",
+        "GotoWood",
+        "GotoDeposit"
+      ]
+    },
+    "East": {
+      "primitive": true,
+      "parents": [
+        "GotoGold",
+        "GotoWood",
+        "GotoDeposit"
+      ]
+    },
+    "West": {
+      "primitive": true,
+      "parents": [
+        "GotoGold",
+        "GotoWood",
+        "GotoDeposit"
+      ]
+    }
+  },
+  "primitive_action_map": {
+    "North": 0,
+    "South": 1,
+    "East": 2,
+    "West": 3,
+    "MineGold": 4,
+    "ChopWood": 5,
+    "Deposit": 6
+  }
+}

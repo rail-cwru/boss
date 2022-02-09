@@ -1,0 +1,16 @@
+{
+  "name": "TaxiWorld",
+  "action_hierarchy": "./actionhierarchy/taxiworld.json",
+  "tile_types": {
+      "0": "EMPTY",
+      "1": "WALL",
+      "2": "S/D"
+  },
+  "map": [
+    "202"
+  ],
+  "agent_spawn": [[0,2]],
+  "num_passengers": 1,
+  "default_reward": -1,
+  "feature_type": "absolute"
+}

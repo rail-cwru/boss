@@ -1,0 +1,43 @@
+{
+  "environment": {
+    "name": "TaxiWorld",
+    "action_hierarchy": "../../tst/agentsystem/test_hierarchy.json",
+    "tile_types": {
+        "0": "EMPTY",
+        "1": "WALL",
+        "2": "S/D"
+    },
+    "map": [
+      "200",
+      "000",
+      "002"
+    ],
+    "agent_spawn": ["random"],
+    "num_passengers": 1,
+    "default_reward": -1,
+    "feature_type": "DISCRETE",
+    "stochastic": true
+  },
+  "agentsystem": {
+    "name": "HierarchicalSystem"
+  },
+  "policy": {
+    "name": "TabularPolicy",
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1
+    }
+  },
+  "algorithm": {
+    "name": "MaxQ",
+    "is_online": true,
+    "learning_rate": 0.25,
+    "discount_factor": 1.0
+  },
+  "callbacks": [
+    {"name": "Evaluate", "eval_num": 1, "timestep": 500, "visualize": false},
+    {"name": "PlotReward"}
+  ],
+  "episodes": 1000,
+  "episode_max_length": 2000
+}

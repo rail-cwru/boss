@@ -1,0 +1,50 @@
+README
+
+Dates are YYYY MM DD.
+
+2018 09 26
+	- Added in base abstract classes for Controller.
+	- Add filestubs for Callbacks.
+	- Initial work on documentation streamlining (using Pysphinx).
+
+2018 10 05
+	- Continued working on setting up documentation using (Pysphinx). This took some time to get fully working.
+	- Changed Reward output variable to np.ndarray in callbacks/base.py. We are still discussing on how best to represent the outputs for both the ObservationDomain and Reward, so this might change in the future. 
+	- Deleted src.common.rewards.py since we are not using it for the time being.
+
+2018 10 12
+	- Worked on porting over trajectory_recorder.py Most of the stuff will be handled by the controller, such as determining the previous states, actions, observations, and rewards. The `trajectory_recorder.py` is just used to save information for each episode in the environment and will be used later to visualize what actions each agent took.
+	- Updated `controller.base.py` and `callbacks/trajectory.py`.
+
+2018 10 15
+	- Spent a good amount of time outlining documentation convention we are using for the project. This will ensure a consistent documentation style. Primarily, this is so that Pysphinx + ReadTheDocs can render the documentation correctly. 
+		* Standard Numpy documentation style
+		* Some minor modifications to account for changes we have sort of decided upon.   
+	- Implement episode runs. Will have to debug to ensure that it is working as intended.
+
+2018 10 26
+	- Read up on most common statistics used to judge how well the Reinforcement Learning algorithm has performed.
+	- Implement some statistics functionality within `callbacks/stats.py`
+
+2018 11 02
+	- Add logger and graphics classes for statistics and visualization. All basic visualizations, such as the current state of the environment are completed, pending testing. 
+	- Add additional statistics to compute rewards for each agent, agentsystem, and total reawrd for the current iteration.
+
+2018 11 09
+	- Add ability to bin/discritize data to map continous action space to discrete through callbacks.
+	- Fix up controller to run with rest of the framework.
+
+2018 11 16
+	- Implement Q-Sensitivity for the Q-Learning MDP. Some portions probably do not work as intended as no testing was performed.
+
+2018 11 30
+	- Fix environment visualization callback, including the ability to visualize different types of environements. Before this was previously just using the get state env. 
+	- Fixed documentation. Now all the modules and submodules in the framework appear, along with their doctrings. This took a lot time to get working. 
+
+TODO:
+ - Fix documentation modules since none of the docstring are showing up. When running `make html`, there are a lot of errors with importing submodules. We can potentialy fix by adding the root directory for this project within the computer's local env.
+ - Visualization stuff, use the new visualze method instead of getstate...
+ - Callbacks should check for system properties and conflicts when the controller is first run so that. This will be based on the environements being used.
+ - Offline learning should just be carried by the policy/algorithm offline + online learning... 
+ - Change MDP Online Controller to a general method (i.e. MDPController). 
+ - Fix callbacks and controller (look at this for reference...https://github.com/keras-team/keras/blob/master/keras/callbacks.py, https://gist.github.com/stared/dfb4dfaf6d9a8501cd1cc8b8cb806d2e)

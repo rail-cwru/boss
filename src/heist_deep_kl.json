@@ -1,0 +1,10 @@
+{
+  "coeff": ["kl_", "kl_lens_"],
+  "title": "Heist: KL-Divergence vs Samples Collected",
+  "save_title": "4_heist_deep.png",
+  "to_plot" : [ ["heist_buf_kl-1-20-2022_2334", "heist_buf_kl_master", "BUF3"],
+             ["heist_huf_kl-1-20-2022_2330", "heist_huf_kl_master", "HUF"],
+            ["heist_polled_kl-1-20-2022_2328", "heist_polled_kl_master", "Polled"],
+           ["heist_tdf_kl-1-20-2022_2333", "heist_tdf_kl_master", "TDF5"]
+           ]
+}

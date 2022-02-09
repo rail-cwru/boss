@@ -1,0 +1,34 @@
+{
+  "name": "Wargus",
+  "action_hierarchy": "./actionhierarchy/flat.json",
+  "map": {
+    "world_size": 25,
+    "forest_locations": [
+      [18, 10],
+      [10, 20],
+      [5, 5]
+    ],
+    "goldmine_locations": [
+      [10, 5],
+      [5, 15],
+      [15, 5]
+    ],
+    "townhall_location": [23, 20]
+  },
+  
+  "reward": {
+    "per_action": -1,
+    "per_move": -0.5,
+    "minegold": -1,
+    "chopwood": -1,
+    "deposit": -1,
+    "error": -1,
+    "task_completion": 50
+  },
+
+  "required_gold": 1,
+  "required_wood": 1,
+  "gold_per_mine": 2,
+  "wood_per_tree": 2
+
+}

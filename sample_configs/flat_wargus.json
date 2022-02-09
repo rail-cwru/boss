@@ -1,0 +1,25 @@
+{
+  "environment": "../src/environment/flat_wargus_small.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "policy": {
+    "name": "TabularPolicy",
+    "policy_sampler": {
+      "name": "DiscreteEGreedy",
+      "epsilon": 0.05
+    }
+  },
+  "algorithm": {
+    "name": "QLearning",
+    "learning_rate": 0.25,
+    "discount_factor": 1.00,
+    "is_online": true
+  },
+  "callbacks": [
+    {"name": "Evaluate", "eval_num": 1, "timestep": 300, "visualize": false},
+    {"name": "PlotReward"}
+  ],
+  "episodes": 1750,
+  "episode_max_length": 1000
+}

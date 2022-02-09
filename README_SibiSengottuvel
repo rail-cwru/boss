@@ -1,0 +1,52 @@
+Sibi Sengottuvel
+
+
+2018 09 28
+	Reviewed the environments in the old framework to see how they should be modified to work in our framework.
+	Wrote base class for environment, as well as detailed documentation for abstract methods.
+	Files Modified: environment/__init__.py, environment/base.py.
+
+2018 10 5
+    Made some changes to the base environment class. We changed how config an domain works, so figuring out how to
+    incoporate that into the base environment class took some time.
+    Began work in test_environment. I implemented most of the functionality, but it doesn't work with domain and properties yet
+    We need to get more of the specifics worked out on that before i am able to implement it.
+    Files modified: environment/base.py, environment/test_environment.py
+
+2018 10 12
+    Made chages to base and test environment for properties and config implementation. Also started implementing domains in the test environment
+    Still need to finalize how domain interacts with the domain, and how it accesses the data.
+    Files modified: environment/base.py, environment/test_environment.py, common/properties.py
+
+2018 10 19
+    Using Domains in test_environment. Figured out how to organize agents within the domains, and implemented this in test envrionnment and base environment.
+    Made other minor fixes to base.py
+    Files modified: environment/base.py, environment/test_environment.py
+
+2018 10 26
+    Worked with group to "finalize" domain. Finished test_env. Started work on gridworld.
+    Made other minor fixes to base.py
+    Files modified: environment/base.py, environment/test_environment.py, environment/gridworld.py
+
+2018 11 2
+    Finished Gridworld environment. ready to start integrating with othe rparts of the group
+    Files modified: environment/gridworld.py, gridworld.json
+
+2018 11 9
+    Made some changes to agent class map. Made viusalization function for gridworld, and also made a test file to just run
+    grid world. spent a lot of time debugging gridworld.
+    Files modified: environment/gridworld.py, environment/base.py, Gridworld_test_sibi.py, environment/test_environment.py
+
+2018 11 16
+    Did some refactoring on the environment class earlier in the week. Went over how the ResourceCollection environment should work.
+    Implemented both domain functions for the env. Still need to do update and observe.
+    Files modified: environment/base.py, GridWorld.py, ResourcCollectionEnvironment.py, TestEnvironment.py, properties.py
+
+2018 11 30
+    Almost finished rsource collector env. Made wrapper env for cartpole.
+    Files modified: environment/ResouceCollectionEnvironment.py, Cartpole.py
+
+2018 12 7
+    Made unit tests for gridworld
+    Made wrapper for mountain car
+    other changes for gridworld.

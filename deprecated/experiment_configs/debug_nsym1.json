@@ -1,0 +1,26 @@
+{
+  "environment": {
+    "base": "./environment/default_PredatorPrey_4pred_2prey_8x8_0001.json",
+    "predators": [[6, 5], [4, 6], [7, 3], [6, 2]],
+    "prey": [[3, 2], [1, 5]]
+  },
+  "agentsystem": {
+    "base": "./agentsystem/default_nsymmetric_deg1_4star.json"
+  },
+  "policy": {
+    "base": "./policy/adf_policy.json",
+    "policy_sampler": "./policy_sampler/thompson.json",
+    "function_approximator": "./function_approximator/action_free_linear.json"
+  },
+  "algorithm": {
+    "base": "./algorithm/QOnline.json",
+    "learning_rate": 0.00001,
+    "lmbda": 0.3
+  },
+  "callbacks": [
+    {"name": "PlotReward"},
+    {"name": "Visualize", "timestep": 10}
+  ],
+  "episodes": 10,
+  "episode_max_length": 100
+}

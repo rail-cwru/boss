@@ -1,0 +1,12 @@
+{
+  "environment": "./environment/cartpole.json",
+  "agentsystem": "./agentsystem/default_independent.json",
+  "policy": "./policy/adf_policy.json",
+  "algorithm": "./algorithm/reinforce.json",
+  "callbacks": [
+    {"name": "Evaluate", "eval_num": 10, "timestep": 25, "visualize": false},
+    {"name": "PlotReward"}
+  ],
+  "episodes": 1000,
+  "episode_max_length": 300
+}

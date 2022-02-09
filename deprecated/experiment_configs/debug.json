@@ -1,0 +1,9 @@
+{
+  "environment": "./environment/test_environment.json",
+  "agentsystem": "./agentsystem/default_independent.json",
+  "policy": "./policy/debug_discrete.json",
+  "algorithm": "./algorithm/debug.json",
+  "callbacks": null,
+  "episodes": 10,
+  "episode_max_length": 100
+}

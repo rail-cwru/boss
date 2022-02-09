@@ -1,0 +1,5 @@
+{
+  "name": "ADFPolicy",
+  "policy_sampler": "./policy_sampler/discrete_uniform_random.json",
+  "function_approximator": "./function_approximator/linear_regression.json"
+}

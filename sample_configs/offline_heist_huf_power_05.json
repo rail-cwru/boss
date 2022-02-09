@@ -1,0 +1,43 @@
+{
+  "environment": "../src/environment/heist_power_polled_05.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "sampler": {
+    "name": "HierarchicalUniform",
+    "collect_abstract": true,
+    "collect_inhibited": true
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 1.0
+  },
+  "callbacks": [
+
+  ],
+  "episodes": -1,
+  "samples_target": 20000,
+  "episode_max_length": 20000,
+  "eval_samples" : -1,
+  "eval_num_samples": [500, 1000, 1500, 2000, 2500, 5000, 7500, 10000, 20000],
+  "save_samples": true,
+  "samples_name": "heist_huf_power_05",
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 1.0,
+  "save_traj": false,
+  "keep_policy": true,
+  "novel_states_count": false
+}

@@ -1,0 +1,6 @@
+{
+  "name": "AVFPolicy",
+  "policy_sampler": "./policy_sampler/thompson.json",
+  "function_approximator": "./function_approximator/linear.json",
+  "continuous": false
+}

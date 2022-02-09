@@ -1,0 +1,264 @@
+{
+  "state_variables": [
+    "leg_loc",
+    "cushion_loc",
+    "back_loc",
+    "claw_loc",
+    "claw_holding"
+  ],
+  "actions": {
+    "Root": {
+      "primitive": false,
+      "state_variables": [
+        "leg_loc",
+        "cushion_loc",
+        "back_loc",
+        "claw_loc",
+        "claw_holding"
+      ],
+      "params": {},
+      "parents": [],
+      "children": {
+        "pickup_back": [],
+        "putdown_back": [],
+        "connect_back": [],
+        "Navigate_back": [],
+        "Navigate_home": [],
+        "Mid": []
+      },
+      "termination": [
+        "leg_loc == 4 AND cushion_loc == 4 AND back_loc == 4"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Mid": {
+      "primitive": false,
+      "state_variables": [
+        "leg_loc",
+        "cushion_loc",
+        "claw_loc",
+        "claw_holding"
+      ],
+      "params": {},
+      "parents": ["Root"],
+      "children": {
+        "pickup_cushion": [],
+        "putdown_cushion": [],
+        "connect_cushion": [],
+        "Navigate_cushion": [],
+        "Navigate_home": [],
+        "Legs" : []
+      },
+      "termination": [
+        "leg_loc == 4 AND cushion_loc == 4"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Legs": {
+      "primitive": false,
+      "state_variables": [
+        "leg_loc",
+        "cushion_loc",
+        "back_loc",
+        "claw_loc",
+        "claw_holding"
+      ],
+      "params": {},
+      "parents": ["Mid"],
+      "children": {
+        "pickup_legs": [],
+        "putdown_legs": [],
+        "connect_legs": [],
+        "Navigate_leg": [],
+        "Navigate_home": []
+      },
+      "termination": [
+        "leg_loc == 4"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_home": {
+      "primitive": false,
+      "state_variables": [
+        "claw_loc"
+      ],
+      "params": {},
+      "parents": ["Legs", "Mid", "Root"],
+      "children": {
+        "left": [],
+        "right": []
+      },
+      "termination": [
+        "claw_loc == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_back": {
+      "primitive": false,
+      "state_variables": [
+        "claw_loc",
+        "back_loc"
+      ],
+      "params": {},
+      "parents": ["Root"],
+      "children": {
+        "left": [],
+        "right": []
+      },
+      "termination": [
+        "back_loc == 4",
+        "claw_loc == back_loc"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_cushion": {
+      "primitive": false,
+      "state_variables": [
+        "claw_loc",
+        "cushion_loc"
+      ],
+      "params": {},
+      "parents": ["Mid"],
+      "children": {
+        "left": [],
+        "right": []
+      },
+      "termination": [
+        "cushion_loc == 4",
+        "claw_loc == cushion_loc"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_leg": {
+      "primitive": false,
+      "state_variables": [
+        "claw_loc",
+        "leg_loc"
+      ],
+      "params": {},
+      "parents": ["Legs"],
+      "children": {
+        "left": [],
+        "right": []
+      },
+      "termination": [
+        "leg_loc == 4",
+        "claw_loc == leg_loc"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "pickup_back": {
+      "primitive": true,
+      "parents": [
+        "Root"
+      ]
+    },
+    "connect_back": {
+      "primitive": true,
+      "parents": [
+        "Root"
+      ]
+    },
+    "putdown_back": {
+      "primitive": true,
+      "parents": [
+        "Root"
+      ]
+    },
+    "pickup_cushion": {
+      "primitive": true,
+      "parents": [
+        "Mid"
+      ]
+    },
+    "putdown_cushion": {
+      "primitive": true,
+      "parents": [
+        "Mid"
+      ]
+    },
+    "connect_cushion": {
+      "primitive": true,
+      "parents": [
+        "Mid"
+      ]
+    },
+    "pickup_legs": {
+      "primitive": true,
+      "parents": [
+        "Legs"
+      ]
+    },
+    "putdown_legs": {
+      "primitive": true,
+      "parents": [
+        "Legs"
+      ]
+    },
+    "connect_legs": {
+      "primitive": true,
+      "parents": [
+        "Legs"
+      ]
+    },
+    "left": {
+      "primitive": true,
+      "parents": [
+        "Navigate_cushion",
+        "Navigate_leg",
+        "Navigate_back",
+        "Navigate_home"
+      ],
+      "state_variables": [
+        "leg_loc",
+        "cushion_loc",
+        "back_loc",
+        "claw_loc",
+        "claw_holding"
+      ]
+    },
+    "right": {
+      "primitive": true,
+      "parents": [
+        "Navigate_cushion",
+        "Navigate_leg",
+        "Navigate_back",
+        "Navigate_home"
+      ],
+      "state_variables": [
+        "leg_loc",
+        "cushion_loc",
+        "back_loc",
+        "claw_loc",
+        "claw_holding"
+      ]
+    }
+  },
+  "primitive_action_map": {
+    "connect_legs": 0,
+    "connect_cushion": 1,
+    "connect_back": 2,
+    "pickup_legs": 3,
+    "pickup_cushion": 4,
+    "pickup_back": 5,
+    "putdown_legs": 6,
+    "putdown_cushion": 7,
+    "putdown_back": 8,
+    "left": 9,
+    "right": 10
+  }
+}

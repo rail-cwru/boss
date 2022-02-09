@@ -1,0 +1,27 @@
+{
+  "name": "HeistLaser",
+  "action_hierarchy": "./actionhierarchy/flat.json",
+  "tile_types": {
+     "0": "EMPTY",
+      "1": "BK",
+      "2": "BL",
+      "3": "GK",
+      "4": "GL",
+      "5": "OK",
+      "6": "OL",
+      "7": "L"
+  },
+  "map": [
+    "17776",
+    "37774",
+    "57772",
+    "07770"
+  ],
+  "agent_spawn_possibilities": [[3, 4], [3, 0]],
+  "agent_spawn": ["list"],
+  "default_reward": -1,
+  "walls": [
+    [2, 3],
+    [3, 8]
+  ]
+}

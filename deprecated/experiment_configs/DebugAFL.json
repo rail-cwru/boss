@@ -1,0 +1,29 @@
+{
+  "environment": {
+    "base": "./environment/gridworld_tunnel.json",
+    "feature_type": "actionfeature"
+  },
+  "agentsystem": "./agentsystem/default_independent.json",
+  "policy": {
+    "base": "./policy/avf_policy.json",
+    "policy_sampler": {
+      "name": "DiscreteEGreedy",
+      "epsilon": 0.1
+    },
+    "function_approximator": "./function_approximator/action_free_linear.json"
+  },
+  "algorithm": {
+    "base": "./algorithm/QOnline.json",
+    "learning_rate": 0.1,
+    "discount_factor": 0.5,
+    "lmbda": 0.8,
+    "n_step": 1
+  },
+  "callbacks": [
+    {"name": "Evaluate", "eval_num": 1, "timestep": 20, "visualize": true},
+    {"name": "VisualizeFA", "timestep": 1, "all_steps": false},
+    {"name": "PlotReward"}
+  ],
+  "episodes": 999,
+  "episode_max_length": 100
+}

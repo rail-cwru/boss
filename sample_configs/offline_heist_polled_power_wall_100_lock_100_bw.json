@@ -1,0 +1,46 @@
+{
+  "environment": "../src/environment/heist_power_polled_wall_100_lock_100.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "sampler": {
+    "name": "PolledSampler",
+    "collect_abstract": true,
+    "collect_inhibited": true,
+    "optimistic":  true
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 1.0
+  },
+  "callbacks": [
+
+  ],
+  "episodes": -1,
+  "samples_target": 30000,
+  "episode_max_length": 30000,
+  "eval_samples" : -1,
+  "eval_num_samples": [500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 6000, 7000, 8000, 9000, 10000,
+    11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000, 24000, 25000,
+    26000, 27000, 28000, 29000, 30000],
+  "save_samples": true,
+  "samples_name": "heist_polled_power_wall_100_lock_100_bw",
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 1.0,
+  "save_traj": false,
+  "keep_policy": true,
+  "novel_states_count": false
+}

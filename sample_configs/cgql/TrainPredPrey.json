@@ -1,0 +1,49 @@
+{
+  "environment": {
+    "name": "PredatorPrey",
+    "map_shape": [32, 32],
+    "predators": ["random", "random", "random", "random"],
+    "prey": ["random", "random", "random", "random"],
+    "prey_ai": "softmax_escape",
+    "share_space": false,
+    "capture_requirement": 2,
+    "allow_noop": true,
+    "chase_reward": 0,
+    "capture_reward": 50,
+    "time_reward": -1,
+    "collision_reward": -5
+  },
+  "agentsystem": {
+    "name": "CoordinationGraphSystem",
+    "coordination_graph": [[0, 1], [0, 2], [0, 3]],
+    "selection_method": "agent_elimination",
+    "transfer_method": "map_to_neighbors",
+    "num_iterations": 1,
+    "use_nodes": false
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "policy_sampler": {"name": "DiscreteBoltzmann", "temperature": 1.0},
+    "function_approximator": {
+      "name": "ActionFreeLinear",
+      "optimizer": "adam"
+    }
+  },
+  "algorithm": {
+    "name": "QLearning",
+    "learning_rate": 0.005,
+    "discount_factor": 0.99,
+    "is_online": true
+  },
+  "callbacks": [
+    {"name": "PlotReward", "no_plot": true},
+    {"name": "Evaluate", "eval_num": 10, "timestep": 1, "visualize": false,
+      "output_reward_file": "results/eval_pp44_nstar_rew.pkl",
+      "save_best_mean": "./results/pp44_nstar/policy_best_exploit"},
+    {"name": "SaveBest", "file_location": "./results/pp44_nstar/policy_best", "threshold": -100},
+    {"name": "SaveSystem", "file_location": "./results/pp44_nstar/policy", "timestep": 1}
+  ],
+  "episodes": 400,
+  "episode_max_length": 1000,
+  "num_trajectories": 5
+}

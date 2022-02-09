@@ -1,0 +1,17 @@
+{
+  "name": "GridWorld",
+  "tile_types": {
+      "0": "EMPTY",
+      "1": "WALL",
+      "2": {"reward": 100, "terminate": true},
+      "3": {"reward": -10, "terminate": true}
+  },
+  "map": [
+    "0000",
+    "3130",
+    "1112"
+  ],
+  "agent_spawn": [[0, 0]],
+  "default_reward": -1,
+  "feature_type": "absolute"
+}

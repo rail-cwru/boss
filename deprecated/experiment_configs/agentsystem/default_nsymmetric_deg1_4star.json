@@ -1,0 +1,8 @@
+{
+  "name": "NSymmetricSystem",
+  "coordination_graph": [[0, 1], [0, 2], [0, 3]],
+  "selection_method": "agent_elimination",
+  "transfer_method": "map_to_neighbors",
+  "num_iterations": 10,
+  "degree": 1
+}

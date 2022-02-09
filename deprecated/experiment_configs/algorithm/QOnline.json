@@ -1,0 +1,8 @@
+{
+  "name": "QLearningOnline",
+  "learning_rate": 0.01,
+  "discount_factor": 0.8,
+  "lmbda": 0.9,
+  "n_step": 1
+}
+

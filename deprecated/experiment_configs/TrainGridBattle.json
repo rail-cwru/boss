@@ -1,0 +1,60 @@
+{
+  "environment": {
+    "name": "GridBattle",
+    "map_shape": [32, 32],
+    "move_order": [0, 1],
+    "attack_reward_matrix": [[-1, 1], [1, -1]],
+    "defeat_reward_matrix": [[-5, 5], [5, -5]],
+    "prolong_agents_on_transfer": true,
+    "end_on_transfer": true,
+    "teams": [
+      {
+        "init_positions": [[12, 14], [16, 14], [14, 16], [18, 16]],
+        "life": 100.0, "recover": 0.1, "attack_power": 1.0,
+        "view_range": 64, "attack_range": 3, "move_range": 3,
+        "time_reward": -0.1, "attacked_reward": -1.5, "defeated_reward": -5.0,
+        "collide_reward": -5, "miss_reward": -0.5,
+        "system_reward": true, "ai": "system"
+      },
+      {
+        "init_positions": [[24, 20], [22, 20], [20, 22], [22, 24]],
+        "life": 100.0, "recover": 0.0, "attack_power": 1.0,
+        "view_range": 3, "attack_range": 3, "move_range": 3,
+        "time_reward": -0.1, "attacked_reward": -0.1, "defeated_reward": -5.0,
+        "collide_reward": -0.5, "miss_reward": -0.5,
+        "system_reward": false, "ai": "stochastic_naive"
+      }
+    ]
+  },
+  "agentsystem": {
+    "name": "CoordinationGraphSystem",
+    "coordination_graph": [[0, 1], [0, 2], [0, 3]],
+    "selection_method": "agent_elimination",
+    "transfer_method": "map_to_neighbors",
+    "num_iterations": 1,
+    "use_nodes": true
+  },
+  "policy": {
+    "base": "./policy/avf_policy.json",
+    "policy_sampler": "./policy_sampler/thompson.json",
+    "function_approximator": {"name": "ActionFreeLinearNpy"}
+  },
+  "algorithm": {
+    "name": "SimpleTDOnline",
+    "learning_rate": 0.003,
+    "discount_factor": 0.99,
+    "method": "Q"
+  },
+  "callbacks": [
+    {"name": "EnvironmentMetrics"},
+    {"name": "PlotReward", "no_plot": true},
+    {"name": "Evaluate", "eval_num": 10, "timestep": 1, "visualize": false,
+      "output_reward_file": "results/gb44_nstar/rew.pkl",
+      "save_best_mean": "./results/gb44_nstar/policy_best_exploit"},
+    {"name": "SaveBest", "file_location": "./results/gb44_nstar/policy_best", "threshold": -100},
+    {"name": "SaveSystem", "file_location": "./results/gb44_nstar/policy", "timestep": 1}
+  ],
+  "episodes": 400,
+  "episode_max_length": 1000,
+  "num_trajectories": 2
+}

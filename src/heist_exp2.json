@@ -1,0 +1,12 @@
+{
+  "coeff": ["cummax_", "len_"],
+  "title": "Heist Rewards vs. Samples Collected",
+  "save_title": "heist.png",
+  "to_plot" : [ ["heist_polled_power_wall_100_lock_100-9-12-2021_2242", "heist_polled_power_wall_100_lock_100_master", "Polled"],
+                ["heist_huf_power_wall_100_lock_100-9-19-2021_1525", "heist_huf_power_wall_100_lock_100_master", "HUF"],
+                ["jump_exp_100_opt_more-9-15-2021_1213", "jump_exp_100_opt_more_master", "Multi"],
+                ["heist_tdf3_power_wall_100_lock_100-9-12-2021_2243", "heist_tdf3_power_wall_100_lock_100_master", "TDF3"],
+                ["heist_tdf7_power_wall_100_lock_100-9-12-2021_2243", "heist_tdf7_power_wall_100_lock_100_master", "TDF7"]
+
+  ]
+}

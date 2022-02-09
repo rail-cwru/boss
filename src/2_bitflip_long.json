@@ -1,0 +1,11 @@
+{
+  "coeff": ["cummax_", "len_"],
+  "title": "Bitflip: Rewards vs. Samples Collected",
+  "save_title": "2_bitflip_long.png",
+  "to_plot" : [
+           ["bitflip_flat-12-24-2021_2348", "bitflip_flat_master", "Flat"],
+           ["bitflip_buf2-12-31-2021_1101", "bitflip_buf2_master", "BUF2"],
+             ["bitflip_huf-12-31-2021_1102", "bitflip_huf_master", "HUF"],
+           ["bitflip_tdf2-12-31-2021_1101", "bitflip_tdf2_master", "TDF2"]
+           ]
+}

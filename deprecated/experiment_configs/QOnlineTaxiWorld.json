@@ -1,0 +1,25 @@
+{
+  "environment": "./environment/taxiworld.json",
+  "agentsystem": "./agentsystem/default_independent.json",
+  "policy": {
+    "base": "./policy/avf_policy.json",
+    "policy_sampler": {
+      "name": "DiscreteEGreedy",
+      "epsilon": 0.1
+    },
+    "function_approximator": "./function_approximator/linear.json"
+  },
+  "algorithm": {
+    "name": "SimpleTDOnline",
+    "learning_rate": 0.1,
+    "discount_factor": 0.99,
+    "method": "Q"
+  },
+  "callbacks": [
+    {"name": "Evaluate", "eval_num": 1, "timestep": 50, "visualize": true},
+    {"name": "VisualizeFA", "timestep": 1, "all_steps": false},
+    {"name": "PlotReward"}
+  ],
+  "episodes": 999,
+  "episode_max_length": 100
+}

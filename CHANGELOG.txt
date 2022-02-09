@@ -1,0 +1,20 @@
+2019 01 23-24
+    Complete rewrite, correction and optimization of agent-elimination function in CGS
+        (23x speedup on 4ring, 2000-10000x speedup on 8-clique and 8-tree)
+
+2019 01 25
+    Optimizations to argmax with tiebreaks
+
+2019 01 26
+    Generalization of some optimized vector-math functions which used cached buffers
+    Improved efficiency and readability of PredatorPrey observe method
+    Bugfix of setting captured prey features to zero after sorting by distance (which was wrong)
+    More than 2x speedup on observe.
+    Predprey on greedy escape now learnable... after squaring the modified-distance values.
+        It's probably got something to do with the nature of summation.
+
+2019 01 27
+    Discovered discrepancy in predprey learning depending on reward scaling.
+    Set up nicer interfacing for deletion experiment.
+    Fixed bugs with calculating the wrong mean cumulative reward over evaluation.
+

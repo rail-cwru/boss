@@ -1,0 +1,5 @@
+{
+    "name": "DiscreteBasicSample",
+    "policy_sampler": "./policy_sampler/discrete_max.json",
+    "continuous": false
+}

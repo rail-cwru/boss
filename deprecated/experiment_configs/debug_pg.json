@@ -1,0 +1,22 @@
+{
+  "environment": "./environment/gridworld_tunnel.json",
+  "agentsystem": "./agentsystem/default_independent.json",
+  "policy": {
+    "base": "./policy/adf_policy.json",
+    "policy_sampler": "./policy_sampler/thompson.json",
+    "function_approximator": "./function_approximator/linear.json"
+  },
+  "algorithm": {
+    "name": "Reinforce",
+    "learning_rate": 0.001,
+    "discount_factor": 0.5
+  },
+  "callbacks": [
+    {"name": "Evaluate", "eval_num": 1, "timestep": 40, "visualize": false},
+    {"name": "VisualizeFA", "timestep": 1, "all_steps": false},
+    {"name": "Visualize", "timestep": 200},
+    {"name": "PlotReward"}
+  ],
+  "episodes": 1000,
+  "episode_max_length": 30
+}

@@ -1,0 +1,357 @@
+{
+  "state_variables": [
+    "agent_loc",
+    "room_num",
+    "direction",
+    "in_intersection",
+    "left_room",
+    "surroundings"
+  ],
+  "actions": {
+    "Root": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "room_num",
+        "direction",
+        "in_intersection",
+        "left_room",
+        "surroundings"
+      ],
+      "params": {},
+      "parents": [],
+      "children": {
+        "Go": {
+          "d": "direction",
+          "r": "room_num"
+        }
+      },
+      "termination": [
+        "room_num == -2"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Go": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "room_num",
+        "direction",
+        "in_intersection",
+        "left_room",
+        "surroundings"
+      ],
+      "params": {
+        "d": ["direction"],
+        "r": ["room_num"]
+      },
+      "parents": [
+        "Root"
+      ],
+      "children": {
+        "ExitInter": {
+          "d": "direction",
+          "r": "room_num"
+        },
+        "ExitHall": {
+          "d": "direction",
+          "r": "room_num"
+        }
+      },
+      "termination": [
+        "in_intersection AND room_num != r",
+        "left_room AND (direction != d OR direction != (d + 2) % 4)"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "ExitInter": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "room_num",
+        "left_room",
+        "surroundings"
+      ],
+      "params": {
+        "d": ["direction"],
+        "r": ["room_num"]
+      },
+      "parents": [
+        "Go"
+      ],
+      "children": {
+        "Sniff": {
+          "d": "direction",
+          "p": "direction"
+        },
+        "Back": {
+          "d": "direction",
+          "p": "direction",
+          "xy": "agent_loc"
+        }
+      },
+      "termination": [
+        "room_num != r"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "ExitHall": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "in_intersection",
+        "left_room",
+        "surroundings"
+      ],
+      "params": {
+        "d": ["direction"],
+        "r": ["room_num"]
+      },
+      "parents": [
+        "Go"
+      ],
+      "children": {
+        "Sniff": {
+          "d": "direction",
+          "p": "direction"
+        },
+        "Back": {
+          "d": "direction",
+          "p": "direction",
+          "xy": "agent_loc"
+        }
+      },
+      "termination": [
+        "in_intersection"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Sniff": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "surroundings"
+      ],
+      "params": {
+        "d": ["direction"],
+        "p": ["direction"]
+      },
+      "parents": [
+        "ExitInter",
+        "ExitHall"
+      ],
+      "children": {
+        "FollowWall": {
+          "d": "direction",
+          "p": "direction"
+        },
+        "ToWall": {
+          "d": "direction"
+        }
+      },
+      "termination": [
+        "d == p OR (d + 2) % 4 = p",
+        "surroundings[d] == 1 AND surroundings[p] == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "ToWall": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "surroundings"
+      ],
+      "params": {
+        "d": ["direction"]
+      },
+      "parents": [
+        "Sniff"
+      ],
+      "children": {
+        "North": {},
+        "East": {},
+        "South": {},
+        "West": {}
+      },
+      "termination": [
+        "surroundings[d] == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "FollowWall": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "surroundings"
+      ],
+      "params": {
+        "d": ["direction"],
+        "p": ["direction"]
+      },
+      "parents": [
+        "Sniff"
+      ],
+      "children": {
+        "North": {},
+        "East": {},
+        "South": {},
+        "West": {}
+      },
+      "termination": [
+        "d == p OR (d + 2) % 4 = p",
+        "surroundings[d] != 1",
+        "surroundings[d] == 1 AND surroundings[p] == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Back": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "left_room",
+        "surroundings"
+      ],
+      "params": {
+        "d": ["direction"],
+        "p": ["direction"],
+        "xy": ["agent_loc"]
+      },
+      "parents": [
+        "ExitInter",
+        "ExitHall"
+      ],
+      "children": {
+        "BackOne": {
+          "d": "direction",
+          "xy": "agent_loc"
+        },
+        "PerpThree": {
+          "p": "direction",
+          "xy": "agent_loc"
+        }
+      },
+      "termination": [
+        "d == p OR (d + 2) % 4 = p",
+        "left_room",
+        "(surroundings[(d + 2) % 4] == 1 OR manhattan_distance(xy, agent_loc, d) >= 1) AND (surroundings[p] == 1 OR manhattan_distance(xy, agent_loc, p) >= 3)"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "BackOne": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "left_room",
+        "surroundings"
+      ],
+      "params": {
+        "d": ["direction"],
+        "xy": ["agent_loc"]
+      },
+      "parents": [
+        "Back"
+      ],
+      "children": {
+        "North": {},
+        "East": {},
+        "South": {},
+        "West": {}
+      },
+      "termination": [
+        "surroundings[(d + 2) % 4] == 1",
+        "left_room",
+        "manhattan_distance(xy, agent_loc, d) >= 1)"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "PerpThree": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "left_room",
+        "surroundings"
+      ],
+      "params": {
+        "p": ["direction"],
+        "xy": ["agent_loc"]
+      },
+      "parents": [
+        "Back"
+      ],
+      "children": {
+        "North": {},
+        "East": {},
+        "South": {},
+        "West": {}
+      },
+      "termination": [
+        "surroundings[p] == 1",
+        "left_room",
+        "manhattan_distance(xy, agent_loc, p) >= 3"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "North": {
+      "primitive": true,
+      "parents": [
+        "ToWall",
+        "FollowWall",
+        "BackOne",
+        "PerpThree"
+      ]
+    },
+    "South": {
+      "primitive": true,
+      "parents": [
+        "ToWall",
+        "FollowWall",
+        "BackOne",
+        "PerpThree"
+      ]
+    },
+    "East": {
+      "primitive": true,
+      "parents": [
+        "ToWall",
+        "FollowWall",
+        "BackOne",
+        "PerpThree"
+      ]
+    },
+    "West": {
+      "primitive": true,
+      "parents": [
+        "ToWall",
+        "FollowWall",
+        "BackOne",
+        "PerpThree"
+      ]
+    }
+  },
+  "primitive_action_map": {
+    "North": 0,
+    "East": 1,
+    "South": 2,
+    "West": 3
+  }
+}

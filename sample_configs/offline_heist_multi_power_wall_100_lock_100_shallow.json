@@ -1,0 +1,56 @@
+{
+  "environment": "../src/environment/heist_power_polled_shallow.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "sampler": {
+     "name": "MultiSampler",
+     "collect_abstract": true,
+     "collect_inhibited": true,
+     "min_reward": -50,
+     "ucb_coef": 4.0,
+     "samplers_list": [
+       "HUF",
+       "Polled",
+       "TDF_1",
+       "BUF_2"
+     ]
+   },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 1.0
+  },
+  "callbacks": [
+
+  ],
+  "episodes": -1,
+  "samples_target": 30000,
+  "episode_max_length": 30000,
+  "eval_samples" : -1,
+ "eval_num_samples": [2800, 3000,
+       3200, 3400,  3600, 3800, 4000, 4200, 4400,  4600, 4800, 5000, 5200, 5400,  5600,  5800,
+       6000,  6200, 6400, 6600,  6800, 7000, 7200, 7400, 7600, 7800, 8000, 8200, 8400, 8600, 8800, 9000,
+      9200, 9400, 9600,  9800,  10000, 10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000,
+      14500, 15000, 16000, 17000, 18000, 19000, 20000, 25000, 30000],
+    "save_samples": true,
+  "samples_name": "heist_multi_shallow_100_lock_100",
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 1.0,
+  "save_traj": false,
+  "keep_policy": true,
+  "steps_per_sampler": 700,
+  "plot_multi": true
+}

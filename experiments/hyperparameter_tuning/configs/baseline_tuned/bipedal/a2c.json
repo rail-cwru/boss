@@ -1,0 +1,45 @@
+{
+  "environment": {
+    "name" : "BipedalWalker"
+  },
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    },
+    "function_approximator": {
+      "name": "ACFunctionApproximator",
+      "structure": [
+        [256, "relu"],
+        [256, null]
+      ],
+      "optimizer": "adam"
+    }
+  },
+  "algorithm": {
+    "name": "A2C",
+    "learning_rate": 1e-4,
+    "critic_learning_rate": 3e-4,
+    "discount_factor": 0.99
+  },
+  "callbacks": [
+    {
+      "name": "SaveReward",
+      "file_location": "experiments\\hyperparameter_tuning\\results\\cartpole\\baseline\\a2c\\{}\\train.csv"
+    },
+    {
+      "name": "Evaluate", 
+      "eval_num": 10,
+      "timestep": 1,
+      "visualize": false,
+      "output_reward_file": "experiments\\hyperparameter_tuning\\results\\cartpole\\baseline\\a2c\\{}\\eval.csv"
+    }
+  ],
+  "episodes": 20000,
+  "episode_max_length": 500,
+  "seed": 2
+}

@@ -1,0 +1,161 @@
+{
+  "state_variables": [
+    "aligned_leg",
+    "connected_leg",
+    "aligned_stabilizer",
+    "connected_stabilizer",
+    "aligned_cushion",
+    "connected_cushion",
+    "aligned_back",
+    "connected_back"
+  ],
+  "actions": {
+    "Root": {
+      "primitive": false,
+      "state_variables": [
+        "aligned_leg",
+        "connected_leg",
+        "aligned_stabilizer",
+        "connected_stabilizer",
+        "aligned_cushion",
+        "connected_cushion",
+        "aligned_back",
+        "connected_back"
+      ],
+      "params": {},
+      "parents": [],
+      "children": {
+        "align_back": [],
+        "connect_back": [],
+        "Mid" : []
+      },
+      "termination": [
+        "ALL p: connected_leg[p] == 1 AND connected_stabilizer == 1 AND connected_cushion == 1 AND connected_back == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Mid": {
+      "primitive": false,
+      "state_variables": [
+        "aligned_leg",
+        "connected_leg",
+        "aligned_stabilizer",
+        "connected_stabilizer",
+        "aligned_cushion",
+        "connected_cushion"
+      ],
+      "params": {},
+      "parents": ["Root"],
+      "children": {
+        "align_cushion": [],
+        "connect_cushion": [],
+        "Lower" : []
+      },
+      "termination": [
+        "ALL p: connected_leg[p] == 1 AND connected_stabilizer == 1 AND connected_cushion == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Lower": {
+      "primitive": false,
+      "state_variables": [
+        "aligned_leg",
+        "connected_leg",
+        "aligned_stabilizer",
+        "connected_stabilizer"
+      ],
+      "params": {},
+      "parents": ["Mid"],
+      "children": {
+        "align_legs_1": [],
+        "align_legs_2": [],
+        "connect_legs_1": [],
+        "connect_legs_2": [],
+        "align_stabilizer": [],
+        "connect_stabilizer": []
+      },
+      "termination": [
+        "ALL p: connected_leg[p] == 1 AND connected_stabilizer == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "align_back": {
+      "primitive": true,
+      "parents": [
+        "Root"
+      ]
+    },
+    "connect_back": {
+      "primitive": true,
+      "parents": [
+        "Root"
+      ]
+    },
+    "align_cushion": {
+      "primitive": true,
+      "parents": [
+        "Mid"
+      ]
+    },
+    "connect_cushion": {
+      "primitive": true,
+      "parents": [
+        "Mid"
+      ]
+    },
+    "align_stabilizer": {
+      "primitive": true,
+      "parents": [
+        "Lower"
+      ]
+    },
+    "connect_stabilizer": {
+      "primitive": true,
+      "parents": [
+        "Lower"
+      ]
+    },
+    "align_legs_1": {
+      "primitive": true,
+      "parents": [
+        "Lower"
+      ]
+    },
+    "connect_legs_1": {
+      "primitive": true,
+      "parents": [
+        "Lower"
+      ]
+    },
+    "align_legs_2": {
+      "primitive": true,
+      "parents": [
+        "Lower"
+      ]
+    },
+    "connect_legs_2": {
+      "primitive": true,
+      "parents": [
+        "Lower"
+      ]
+    }
+  },
+  "primitive_action_map": {
+    "align_legs_1": 0,
+    "align_legs_2": 1,
+    "connect_legs_1": 2,
+    "connect_legs_2": 3,
+    "align_stabilizer": 4,
+    "connect_stabilizer": 5,
+    "align_cushion": 6,
+    "connect_cushion": 7,
+    "align_back": 8,
+    "connect_back": 9
+  }
+}

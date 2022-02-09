@@ -1,0 +1,12 @@
+{
+  "environment": "./environment/cartpole.json",
+  "agentsystem": "./agentsystem/default_independent.json",
+  "policy": "./policy/avf_policy_sarsaonline.json",
+  "algorithm": "./algorithm/SARSAOnlineCartpole.json",
+  "callbacks": [
+    {"name": "Evaluate", "eval_num": 5, "timestep": 10, "visualize": false},
+    {"name": "PlotReward"}
+  ],
+  "episodes": 300,
+  "episode_max_length": 200
+}

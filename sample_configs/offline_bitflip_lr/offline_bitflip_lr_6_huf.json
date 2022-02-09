@@ -1,0 +1,44 @@
+{
+  "environment": "../../src/environment/bitflip_6_offline.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "sampler": {
+    "name": "HierarchicalUniform",
+    "collect_abstract": true,
+    "collect_inhibited": true
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 0.9
+  },
+  "callbacks": [
+
+  ],
+  "episodes": -1,
+  "samples_target": 50000,
+  "episode_max_length": 1250,
+  "eval_samples" : -1,
+  "eval_num_samples": [750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000,
+                      4250, 4500, 4750,  5000,  6000,  7000,
+                      8000, 9000, 10000, 12500, 15000, 17500, 22500, 25000, 30000, 40000, 50000],
+  "save_samples": true,
+  "samples_name":  "bitflip_huf_09",
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 1.0,
+  "save_traj": false,
+  "keep_policy": true
+}

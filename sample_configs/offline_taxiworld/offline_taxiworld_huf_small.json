@@ -1,0 +1,43 @@
+{
+  "environment": "../../src/environment/taxiworld_sampler.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "sampler": {
+    "name": "HierarchicalUniform",
+    "collect_abstract": true,
+    "collect_inhibited": true,
+    "min_reward": -20
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 0.1
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 1.0
+  },
+  "callbacks": [
+
+  ],
+  "episodes": -1,
+  "samples_target": 500,
+  "episode_max_length": 500,
+  "eval_samples" : -1,
+  "eval_num_samples": [25, 50, 75, 100,125, 150,175,200, 225, 250, 300, 350, 400, 500],
+  "save_samples": true,
+  "save_name":  "taxi_huf_small",
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 1.0,
+  "save_traj": false,
+  "keep_policy": true
+}

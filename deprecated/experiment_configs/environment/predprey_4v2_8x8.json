@@ -1,0 +1,14 @@
+{
+  "name": "PredatorPrey",
+  "map_shape": [8, 8],
+  "predators": ["random", "random", "random", "random"],
+  "prey": ["random", "random"],
+  "prey_ai": "frozen",
+  "share_space": false,
+  "capture_requirement": 2,
+  "allow_noop": false,
+  "chase_reward": 0,
+  "capture_reward": 5,
+  "time_reward": -0.1,
+  "collision_reward": -1
+}

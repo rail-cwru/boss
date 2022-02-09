@@ -1,0 +1,12 @@
+{
+  "environment": "./gridworld_tunnel.json",
+  "agentsystem": "./default_independent.json",
+  "policy": "./avf_policy.json",
+  "algorithm": "./SARSAOffline.json",
+  "callbacks": [
+    {"name": "Evaluate", "eval_num": 1, "timestep": 300, "visualize": false},
+    {"name": "PlotReward"}
+  ],
+  "episodes": 300,
+  "episode_max_length": 25
+}

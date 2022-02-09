@@ -1,0 +1,10 @@
+{
+  "name": "QLearningOffline",
+  "learning_rate": 0.1,
+  "discount_factor": 0.8,
+  "lmbda": 1.0,
+  "n_step": "inf",
+  "model": null,
+  "objective_function": "Episodic"
+}
+

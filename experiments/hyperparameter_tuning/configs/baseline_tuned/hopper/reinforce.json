@@ -1,0 +1,48 @@
+{
+  "environment": {
+    "name" : "Hopper"
+  },
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    },
+    "function_approximator": {
+      "name": "DenseNeuralNet",
+      "structure": [
+        [24, "relu"],
+        [24, "relu"],
+        [24, "relu"]
+      ],
+      "optimizer": "adam"
+    }
+  },
+  "algorithm": {
+    "name": "Reinforce",
+    "learning_rate": 0.001,
+    "discount_factor": 0.99,
+    "memory_size": 40000,
+    "batch_size": 128,
+    "update_interval": 4
+  },
+  "callbacks": [
+    {
+      "name": "SaveReward",
+      "file_location": "experiments\\hyperparameter_tuning\\results\\hopper\\baseline\\reinforce\\{}\\train.csv"
+    },
+    {
+      "name": "Evaluate", 
+      "eval_num": 10,
+      "timestep": 1000,
+      "visualize": false,
+      "output_reward_file": "experiments\\hyperparameter_tuning\\results\\hopper\\baseline\\reinforce\\{}\\eval.csv"
+    }
+  ],
+  "episodes": 3000,
+  "episode_max_length": 1000,
+  "seed": 2
+}

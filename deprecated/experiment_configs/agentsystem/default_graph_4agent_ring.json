@@ -1,0 +1,7 @@
+{
+  "name": "CoordinationGraphSystem",
+  "coordination_graph": [[0, 1], [1, 2], [2, 3], [0, 3]],
+  "selection_method": "max_plus",
+  "transfer_method": "map_to_neighbors",
+  "num_iterations": 10
+}

@@ -1,0 +1,73 @@
+{
+  "environment": {
+    "name": "PredatorPrey",
+    "map_shape": [32, 32],
+    "predators": ["random", "random", "random", "random", "random", "random", "random", "random"],
+    "prey": ["random", "random", "random", "random", "random", "random", "random", "random",
+             "random", "random", "random", "random", "random", "random", "random", "random"],
+    "prey_ai": "softmax_escape",
+    "prey_temp": 0.5,
+    "share_space": false,
+    "capture_requirement": 2,
+    "allow_noop": true,
+    "chase_reward": 0,
+    "capture_reward": 5,
+    "time_reward": -0.1,
+    "collision_reward": -1
+  },
+  "agentsystem": {
+    "name": "CoordinationGraphSystem",
+    "coordination_graph": [[0, 1], [0, 2], [0, 3], [0, 4], [4, 5], [4, 6], [4, 7]],
+    "selection_method": "agent_elimination",
+    "transfer_method": "map_to_neighbors",
+    "num_iterations": 1,
+    "use_nodes": true
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "policy_sampler": {"name": "DiscreteBoltzmann", "temperature": 1.0},
+    "function_approximator": {
+      "name": "ActionFreeLinear",
+      "optimizer": "adam"
+    }
+  },
+  "algorithm": {
+    "name": "QLearning",
+    "learning_rate": 0.0005,
+    "discount_factor": 0.99,
+    "is_online": true
+  },
+  "callbacks": [
+    {
+      "name": "CheckpointSchedule",
+      "schedule": {
+        "1": "save",
+        "2": "load",
+        "3": "load",
+        "4": "load",
+        "5": "load"
+      }
+    },
+    {
+      "name": "LoadPolicySchedule",
+      "schedule": {
+        "1": "./results/PredPrey8F_n_8ethane/policy_best_exploit.npz",
+        "2": "./results/PredPrey8F_n_8ethane/policy_best_exploit.npz",
+        "3": "./results/PredPrey8F_n_8ethane/policy_best_exploit.npz",
+        "4": "./results/PredPrey8F_n_8ethane/policy_best_exploit.npz",
+        "5": "./results/PredPrey8F_n_8ethane/policy_best_exploit.npz"
+      }
+    },
+    {"name": "LearningSchedule", "schedule": {"1": false}},
+    {"name": "DeleteAgentsSchedule", "schedule": {"2": [0], "3": [1]}},
+    {
+      "name": "SimulatedDeletionSchedule",
+      "eval_at": 1, "eval_num": 10,
+      "schedule": {"4": [0], "5": [1]}
+    },
+    {"name": "PlotReward"}
+  ],
+  "episodes": 5,
+  "episode_max_length": 1000,
+  "num_trajectories": 5
+}

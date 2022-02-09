@@ -1,0 +1,4 @@
+{
+    "name": "MultilayerPerceptron",
+    "structure": [20, 20, 10]
+}

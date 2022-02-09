@@ -1,0 +1,21 @@
+{
+  "name": "TaxiWorld2",
+  "action_hierarchy": "./actionhierarchy/flat.json",
+  "tile_types": {
+      "0": "EMPTY",
+      "1": "WALL",
+      "2": "S/D"
+  },
+  "map": [
+    "20102",
+    "00100",
+    "00000",
+    "01010",
+    "21012"
+  ],
+  "agent_spawn": ["random"],
+  "num_passengers": 1,
+  "default_reward": -1,
+  "feature_type": "DISCRETE",
+  "stochastic": false
+}

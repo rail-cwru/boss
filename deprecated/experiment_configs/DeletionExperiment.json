@@ -1,0 +1,99 @@
+{
+  "environment": {
+    "name": "PredatorPrey",
+    "map_shape": [32, 32],
+    "predators": ["random", "random", "random", "random"],
+    "prey": ["random", "random", "random", "random"],
+    "prey_ai": "random",
+    "share_space": false,
+    "capture_requirement": 2,
+    "allow_noop": true,
+    "chase_reward": 0,
+    "capture_reward": 5,
+    "time_reward": -0.1,
+    "collision_reward": -1
+  },
+  "agentsystem": {
+    "name": "CoordinationGraphSystem",
+    "coordination_graph": [[0, 1], [0, 2], [0, 3]],
+    "selection_method": "agent_elimination",
+    "transfer_method": "map_to_neighbors",
+    "num_iterations": 1,
+    "use_nodes": true
+  },
+  "policy": {
+    "base": "./policy/avf_policy.json",
+    "policy_sampler": "./policy_sampler/thompson.json",
+    "function_approximator": {"name": "ActionFreeLinearNpy"}
+  },
+  "algorithm": {
+    "name": "SimpleTDOnline",
+    "learning_rate": 0.0005,
+    "discount_factor": 0.99,
+    "method": "Q"
+  },
+  "callbacks": [
+    {
+      "name": "CheckpointSchedule",
+      "schedule": {
+        "1": "save",
+        "101": "load",
+        "201": "load",
+        "301": "load",
+        "401": "load",
+        "501": "load",
+        "601": "load",
+        "701": "load",
+        "801": "load"
+      }
+    },
+    {
+      "name": "LoadPolicySchedule",
+      "schedule": {
+        "1": "./results/pp44star/nq_best_exploit.npz",
+        "101": "./results/pp44star/nq_best_exploit.npz",
+        "201": "./results/pp44star/nq_best_exploit.npz",
+        "301": "./results/pp44star/nq_best_exploit.npz",
+        "401": "./results/pp44star/nq_best_exploit.npz",
+        "501": "./results/pp44star/nq_best_exploit.npz",
+        "601": "./results/pp44star/nq_best_exploit.npz",
+        "701": "./results/pp44star/nq_best_exploit.npz",
+        "801": "./results/pp44star/nq_best_exploit.npz"
+      }
+    },
+    {
+      "name": "LearningSchedule",
+      "schedule": {
+        "1": false,
+        "111": true,
+        "201": false,
+        "211": true,
+        "301": false,
+        "311": true,
+        "401": false,
+        "411": true,
+        "501": false,
+        "511": true,
+        "601": false,
+        "611": true,
+        "701": false,
+        "711": true,
+        "801": false,
+        "811": true
+      }
+    },
+    {
+      "name": "DeleteAgentsSchedule",
+      "schedule": {"101": [0], "201": [1], "301": [2], "401": [3]}
+    },
+    {
+      "name": "SimulatedDeletionSchedule",
+      "eval_at": 1, "eval_num": 10,
+      "schedule": {"501": [0], "601": [1], "701": [2], "801": [3]}
+    },
+    {"name": "PlotReward", "no_plot": true}
+  ],
+  "episodes": 900,
+  "episode_max_length": 1000,
+  "num_trajectories": 5
+}

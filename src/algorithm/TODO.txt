@@ -1,0 +1,2 @@
+Expansion Topics:
+    1. Eligibility Traces

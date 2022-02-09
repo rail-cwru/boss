@@ -1,0 +1,7 @@
+{
+	"name": "PolicyGradient",
+	"discount_factor": 0.8,
+	"n_step": 5,
+	"model": null,
+	"objective_function": "Episodic"
+}

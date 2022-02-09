@@ -1,0 +1,182 @@
+{
+  "state_variables": [
+    "i_zero"
+  ],
+  "actions": {
+    "Root": {
+      "primitive": false,
+      "state_variables": [
+        "i_zero_0",
+        "i_zero_1",
+        "i_zero_2",
+        "i_zero_3",
+        "i_zero_4",
+        "i_zero_5",
+        "i_zero_6",
+        "i_zero_7"
+      ],
+      "params": {},
+      "parents": [],
+      "children": {
+        "Clear_6": [],
+        "Flip_7" : []
+      },
+      "termination": [
+        "ALL p: i_zero[p] == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Clear_6": {
+      "primitive": false,
+      "state_variables": [
+        "i_zero_0",
+        "i_zero_1",
+        "i_zero_2",
+        "i_zero_3",
+        "i_zero_4",
+        "i_zero_5",
+        "i_zero_6"
+      ],
+      "params": {},
+      "parents": ["Root"],
+      "children": {
+        "Clear_5": [],
+        "Flip_6" : []
+      },
+      "termination": [
+        "ALL p: i_zero[p] == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Clear_5": {
+      "primitive": false,
+      "state_variables": [
+        "i_zero_0",
+        "i_zero_1",
+        "i_zero_2",
+        "i_zero_3",
+        "i_zero_4",
+        "i_zero_5"
+      ],
+      "params": {},
+      "parents": ["Clear_6"],
+      "children": {
+        "Clear_4": [],
+        "Flip_5" : []
+      },
+      "termination": [
+        "ALL p: i_zero[p] == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Clear_4": {
+      "primitive": false,
+      "state_variables": [
+        "i_zero_0",
+        "i_zero_1",
+        "i_zero_2",
+        "i_zero_3",
+        "i_zero_4"
+      ],
+      "params": {},
+      "parents": ["Clear_5"],
+      "children": {
+        "Clear_3": [],
+        "Flip_4" : []
+      },
+      "termination": [
+        "ALL p: i_zero[p] == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Clear_3": {
+      "primitive": false,
+      "state_variables": [
+        "i_zero_0",
+        "i_zero_1",
+        "i_zero_2",
+        "i_zero_3"
+      ],
+      "params": {},
+      "parents": ["Clear_4"],
+      "children": {
+        "Flip_3" : [],
+        "Flip_2" : [],
+        "Flip_1" : [],
+        "Flip_0" : []
+      },
+      "termination": [
+        "ALL p: i_zero[p] == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Flip_7": {
+      "primitive": true,
+      "parents": [
+        "Root"
+      ]
+    },
+    "Flip_6": {
+      "primitive": true,
+      "parents": [
+        "Clear_6"
+      ]
+    },
+    "Flip_5": {
+      "primitive": true,
+      "parents": [
+        "Clear_5"
+      ]
+    },
+    "Flip_4": {
+      "primitive": true,
+      "parents": [
+        "Clear_4"
+      ]
+    },
+    "Flip_3": {
+      "primitive": true,
+      "parents": [
+        "Clear_3"
+      ]
+    },
+    "Flip_2": {
+      "primitive": true,
+      "parents": [
+        "Clear_3"
+      ]
+    },
+    "Flip_1": {
+      "primitive": true,
+      "parents": [
+        "Clear_3"
+      ]
+    },
+    "Flip_0": {
+      "primitive": true,
+      "parents": [
+        "Clear_3"
+      ]
+    }
+  },
+  "primitive_action_map": {
+    "Flip_0": 0,
+    "Flip_1": 1,
+    "Flip_2": 2,
+    "Flip_3": 3,
+    "Flip_4": 4,
+    "Flip_5": 5,
+    "Flip_6": 6,
+    "Flip_7": 7
+  }
+}

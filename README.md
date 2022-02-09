@@ -1,2 +1,7 @@
-# boss
-Biased Offline Sampler Selection for Hierarchical Reinforcement Learning
+# imeiro
+
+RL Framework.
+
+A modular and extensible one-stop framework for Reinforcement Learning with Agent interaction schemes.
+
+For requirements see `src/requirements.txt`

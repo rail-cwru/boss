@@ -1,0 +1,63 @@
+{
+  "environment": {
+    "name" : "Cartpole"
+  },
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    },
+    "function_approximator": {
+      "name": "ACFunctionApproximator",
+      "actor_structure": [
+        [32, "relu"],
+        [32, "relu"],
+        [32, null]
+      ],
+      "critic_structure": [
+        [32, "relu"],
+        [32, "relu"],
+        [32, null]
+      ],
+      "optimizer": "adam"
+    }
+  },
+  "algorithm": {
+    "name": "A2C",
+    "learning_rate": 0.001,
+    "discount_factor": 0.99,
+    "entropy_coeff" : 0,
+    "value_coeff": 1,
+    "memory_size": 10,
+    "batch_size": 10
+  },
+  "callbacks": [
+    {
+      "name": "TuneHyperparameters", 
+      "tuning_strategy": {
+        "name": "IdealBaseline",
+        "tune_policy_sampler_params": true,
+        "file_location": "experiments\\hyperparameter_tuning\\results\\cartpole\\ib\\a2c\\{}\\", 
+        "ensemble_size": 20
+      }
+    },
+    {
+      "name": "Evaluate", 
+      "eval_num": 10,
+      "timestep": 1,
+      "visualize": false,
+      "output_reward_file": "experiments\\hyperparameter_tuning\\results\\cartpole\\ib\\a2c\\{}\\eval.csv"
+    },
+    {
+      "name": "SaveReward",
+      "file_location": "experiments\\hyperparameter_tuning\\results\\cartpole\\ib\\a2c\\{}\\train.csv"
+    }
+  ],
+  "episodes": 5000,
+  "episode_max_length": 500,
+  "seed": 2
+}

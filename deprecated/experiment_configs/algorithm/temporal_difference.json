@@ -1,0 +1,6 @@
+{
+    "n_step": 5,
+	"lmbda": 0.6,
+    "Online": true,
+    "FA": "linearSGD"
+}

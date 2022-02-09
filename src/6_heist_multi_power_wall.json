@@ -1,0 +1,9 @@
+{
+  "coeff": ["cummax_", "len_"],
+  "title": "Heist: Rewards vs. Samples Collected",
+  "save_title": "6_heist_power_move.png",
+  "to_plot" : [
+                [ "heist_power_wall_11_11/heist_optimal_2800-11-17-2021_0035", "heist_optimal_2800_master", "BOSS"],
+                ["heist_power_wall_11_11/heist_polled_power_wall_100_lock_100-11-11-2021_1844", "heist_polled_power_wall_100_lock_100_master", "Polled"]
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "environment": "./environment/gridworld_tunnel.json",
+  "agentsystem": "./agentsystem/default_independent.json",
+  "policy": {
+    "base": "./policy/avf_policy.json",
+    "policy_sampler": "./policy_sampler/discrete_e_greedy.json",
+    "function_approximator": "./function_approximator/linear.json"
+  },
+  "algorithm": "./algorithm/SARSAOnline.json",
+  "callbacks": [
+    {"name": "Visualize", "timestep": 100},
+    {"name": "Evaluate", "eval_num": 1, "timestep": 30, "visualize": false},
+    {"name": "VisualizeFA", "timestep": 10, "all_steps": false},
+    {"name": "PlotReward"}
+  ],
+  "episodes": 1000,
+  "episode_max_length": 50
+}

@@ -1,0 +1,13 @@
+1. ModelFreeFTL Improvements
+    a. Particle Filter Updates
+        i. Discard Particles with low IWs with high probability
+        ii. Calculate distance between particles and discared particle with lower IW if distance is less than epsilon.
+2. Implement HOOF
+3. Run on additional environments
+    a. Hopper
+    b. Bipedal Walker
+4. Implement ModelBasedFTL
+    a. Implement DBN
+    b. Use Ideal Methodology for alg choice update
+5. Paper Sections: 
+    a. Intro, Background, Experiments and Results, Discussion

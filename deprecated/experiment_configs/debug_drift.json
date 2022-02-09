@@ -1,0 +1,20 @@
+{
+  "environment": "./environment/drift.json",
+  "agentsystem": "./agentsystem/default_independent.json",
+  "policy": {
+    "base": "./policy/avf_policy.json",
+    "policy_sampler": "./policy_sampler/thompson.json",
+    "function_approximator": "./function_approximator/linear.json"
+  },
+  "algorithm": {
+    "base": "./algorithm/SARSAOffline.json",
+    "learning_rate": 0.1
+  },
+  "callbacks": [
+    {"name": "Evaluate", "eval_num": 5, "timestep": 50, "visualize": false},
+    {"name": "PlotReward"},
+    {"name": "Timer"}
+  ],
+  "episodes": 300,
+  "episode_max_length": 300
+}

@@ -1,0 +1,42 @@
+{
+  "environment": "../src/environment/bitflip_middle_offline_6.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "sampler": {
+    "name": "HierarchicalUniform",
+    "collect_abstract": true,
+    "collect_inhibited": true,
+    "min_reward": -200
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 1.0
+  },
+  "callbacks": [
+
+  ],
+  "episodes": -1,
+  "samples_target": 20000,
+  "episode_max_length": 1000,
+  "eval_samples" : -1,
+  "eval_num_samples": [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000],
+  "save_samples": false,
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 0.5,
+  "save_traj": false,
+  "keep_policy": true
+}
