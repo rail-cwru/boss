@@ -40,6 +40,5 @@ These values are saved both as .txt and .pkl and are updated and overwritten eve
 
 
 ### BOSS output
-The BOSS analyses will output a few additional pieces of information. First, it will output the list of samplers that were selected at each point in the analysis. It will also plot the BOSS reward vs all biased samplers as a function of length for each run. It will also plot the UCB of each sampler to illustrate decision making for each run. 
-
+The BOSS analyses will output a few additional pieces of information. First, it will output the list of samplers that were selected at each point in the analysis. It will also plot the BOSS reward vs all biased samplers as a function of length for each run. It will also plot the UCB of each sampler to illustrate decision making for each run. The reward of each sampler will be saved in a different txt and pkl file. These files hold a 2-d list, which is a list of reward lists, where each list represents the rewards acheived by the policy trained on the samples collected with that sampler. The runtime, len, eval and cummax are all still stored, and these represent the rewards of the policy trained on all of the samples collected (i.e the reward of the overall BOSS sampler)
 
