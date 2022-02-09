@@ -1,9 +1,0 @@
-{
-  "coeff": ["cummax_", "len_"],
-  "title": "Bitflip: Rewards vs. Samples Collected",
-  "save_title": "bitflip_removed_only.png",
-  "to_plot" : [
-             ["bitflip_10_13/bitflip_multi_opt_more-10-13-2021_2111", "bitflip_multi_opt_more_master", "BOSS"],
-             ["bitflip_10_13/bitflip_multi_opt_removed-12-2-2021_2359", "bitflip_multi_opt_master", "BOSS Removed TDF2"]
-           ]
-}

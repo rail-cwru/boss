@@ -1,9 +1,0 @@
-{
-  "coeff": ["cummax_", "len_"],
-  "title": "Heist: Rewards vs. Samples Collected",
-  "save_title": "heist_flat.png",
-  "to_plot" : [
-                ["heist_flat_master", "heist_flat_master", "Flat"],
-                ["heist_not_deep/heist_polled", "master", "Polled"]
-           ]
-}
