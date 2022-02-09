@@ -1,5 +1,0 @@
-{
-  "name": "BitFlipMiddle",
-  "action_hierarchy": "./actionhierarchy/bitflip_middle_flattened/bitflip_6_middle_offline_f1.json",
-  "num_bits": 6
-}
