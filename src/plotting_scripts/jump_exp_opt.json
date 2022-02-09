@@ -1,0 +1,10 @@
+{
+  "coeff": ["Master_rew_", "len_"],
+  "title": "UCB Step Optimal Experiment: Heist Rewards vs. Samples Collected",
+  "save_title": "jump_opt.png",
+  "to_plot" : [ ["jump_exp_100_opt-9-8-2021_2249", "jump_exp_100_opt_master", "100"],
+             ["jump_exp_200_opt-9-8-2021_2249", "jump_exp_200_opt_master", "200"],
+            [ "jump_exp_400_opt-9-8-2021_2250", "jump_exp_400_opt_master", "400"],
+            ["jump_exp_800_opt-9-8-2021_2250", "jump_exp_800_opt_master", "800"]
+           ]
+}

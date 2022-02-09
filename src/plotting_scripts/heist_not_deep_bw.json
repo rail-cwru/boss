@@ -1,0 +1,13 @@
+{
+  "coeff": ["cummax_", "len_"],
+  "title": "Heist: Rewards vs. Samples Collected",
+  "save_title": "heist_bw1.png",
+  "to_plot" : [
+
+                ["heist_huf_bw-12-29-2021_0003", "heist_huf_bw_master", "HUF BW"],
+                ["heist_not_deep/heist_huf_mod", "master", "HUF"],
+
+                ["heist_buf-12-29-2021_2225", "heist_buf_master", "BUF2 BW"],
+                ["heist_not_deep/heist_buf", "master", "BUF2"]
+  ]
+}

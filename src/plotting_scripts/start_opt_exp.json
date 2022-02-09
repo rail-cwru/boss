@@ -1,0 +1,10 @@
+{
+  "coeff": ["Master_rew_", "len_"],
+  "title": "Initial Step Optimal Experiment: Heist Rewards vs. Samples Collected",
+  "save_title": "start_opt.png",
+  "to_plot" : [ ["start_exp_100_opt-9-8-2021_2302", "start_exp_100_opt_master", "100"],
+             ["start_exp_200_opt-9-8-2021_2301", "start_exp_200_opt_master", "200"],
+            [ "start_exp_400_opt-9-8-2021_2300", "start_exp_400_opt_master", "400"],
+            ["start_exp_800_opt-9-8-2021_2259", "start_exp_800_opt_master", "800"]
+           ]
+}

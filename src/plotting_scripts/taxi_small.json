@@ -1,0 +1,10 @@
+{
+  "coeff": ["cummax_", "len_"],
+  "title": "Taxi: Rewards vs. Samples Collected",
+  "save_title": "taxi_small.png",
+  "to_plot" : [ ["offline_taxiworld_buf_small-10-27-2021_2356", "offline_taxiworld_buf_small_master", "BUF"],
+                ["offline_taxiworld_tdf_small-10-27-2021_2358", "offline_taxiworld_tdf_small_master", "TDF"],
+                ["taxi_huf_small-10-27-2021_2357", "taxi_huf_small_master", "HUF"],
+                ["offline_taxiworld_small-10-27-2021_2359", "offline_taxiworld_small_master", "Polled"]
+           ]
+}

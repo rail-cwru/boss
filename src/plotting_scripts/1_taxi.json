@@ -1,0 +1,10 @@
+{
+  "coeff": ["cummax_", "len_"],
+  "title": "Taxi: Rewards vs. Samples Collected",
+  "save_title": "1_taxi.png",
+  "to_plot" : [ ["taxi_no_numpy/taxi_buf-no_npy", "taxi_buf_master", "BUF"],
+                ["taxi_no_numpy/taxi_tdf_no_npy", "taxi_tdf_master", "TDF"],
+                ["taxi_no_numpy/taxi_huf_no_npy", "taxi_huf_master", "HUF"],
+                ["taxi_no_numpy/taxi_polled_no_npy", "taxi_polled_master", "Polled"]
+           ]
+}
