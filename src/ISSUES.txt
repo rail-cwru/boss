@@ -1,3 +1,0 @@
-Current issues.
-
-Online TD-Lambda methods do not seem to learn properly. Investigate reasons and fix.
