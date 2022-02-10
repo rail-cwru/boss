@@ -11,7 +11,9 @@ class HierarchicalUniform(PolledSampler, AbstractModuleFrame):
     """
     HierarchicalUniform (HUF) sampler
     Selects samples using a uniform random policy over reachable actions
-    while deriving samples from the origanal hierarchy
+    while deriving samples from the original hierarchy
+
+    The HUF sampler takes no additional parameters than the Polled sampler
 
     @author Eric Miller
     @contact edm54@case.edu

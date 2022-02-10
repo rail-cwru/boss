@@ -17,6 +17,15 @@ class PolledSampler(HierarchicalSystem, AbstractModuleFrame):
     """
     An agent system designed for polled, hierarchical sampling for offline learning
     Designed for offline sampling only, not intended for use as an agentSystem for online learning
+
+    Has the following parameters:
+    Collect_abstract: Whether to collect abstract samples
+    Collect_inhibited: Whether to collect inhibited samples
+    min_reward: Minimum reward reqired for inhibited samples
+    use_primitive_dist: When a primative action is shared by parents, this will make the SA count
+                        cumulative across all parents.
+
+
     @author Eric Miller
     @contact edm54@case.edu
     """

@@ -36,6 +36,7 @@ class DispResults(Callback):
         self.epi_lengths = []
         self.agent_total_rewards = {}
         self.agent_times = {}
+
         super().__init__(controller, config)
 
     def _get_implement_flags(self):
@@ -58,22 +59,28 @@ class DispResults(Callback):
             else:
                 self.agent_total_rewards[agent].append(total_reward)
                 self.agent_times[agent].append(time)
+            print('Non-Eval Rewards:')
+            print(total_rewards)
+            print('Episode Lengths')
+            print(self.epi_lengths)
 
         if self.no_plot:
             return
 
     def finalize(self):
-        # for agent, total_rewards in self.agent_total_rewards.items():
-        #     # print('Non-Eval Rewards:', agent, total_rewards)
-        #     print('rewards:')
-        #     print(total_rewards)
-        #
-        #     # arr = pickle.load(open('rew', 'rb'))
-        #     # arr.append(total_rewards)
-        #     # pickle.dump(arr, open('rew', 'wb'))
-        #
-        #     print('Episode Lengths')
-        #     print(self.epi_lengths)
+        for agent, total_rewards in self.agent_total_rewards.items():
+            # print('Non-Eval Rewards:', agent, total_rewards)
+            print('Non-Eval Rewards:')
+            print(total_rewards)
+
+
+
+            # arr = pickle.load(open('rew', 'rb'))
+            # arr.append(total_rewards)
+            # pickle.dump(arr, open('rew', 'wb'))
+
+            print('Episode Lengths')
+            print(self.epi_lengths)
 
             # arr = pickle.load(open('len', 'rb'))
             # arr.append(self.epi_lengths)

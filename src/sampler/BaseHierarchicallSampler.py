@@ -19,7 +19,6 @@ class BaseHierarchicalSampler(HierarchicalSystem, AbstractModuleFrame):
         self.state_action_visits_map = {}
 
         for name, pg in self.completion_function_pg[0].items():
-            # if not self.is_primitive(name) or self.use_primitive_distribution:
             if self.collect_abstract:
                 # Use abstracted state space
                 obs_domain = pg.policy.domain_obs

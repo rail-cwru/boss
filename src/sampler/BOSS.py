@@ -12,8 +12,15 @@ import random
 
 class BOSS(HierarchicalSystem, AbstractModuleFrame):
     """
-    An agent system designed for polled, hierarchical sampling for offline learning
+    An agent system designed for Biased Offline Sampler Selection (BOSS) sampling for offline learning
     Designed for offline sampling only, not intended for use as an agentSystem for online learning
+
+    Takes all of the paremeters that Polled sampling takes with the addition of a few more:
+    -samplers_list: A list of samplers to include in the analysis.
+        For flattened samplers, the format is ALGORITHM_ITERATIONS. Ex: BUF_2
+    - ucb_coef: the coefficient for the upper confidence bound (UCB) algorithm
+    - check_dist: Saves the distribution of action selection for each sampler (for debugging purposes)
+
     @author Eric Miller
     @contact edm54@case.edu
     """
@@ -48,6 +55,12 @@ class BOSS(HierarchicalSystem, AbstractModuleFrame):
                            'saves the distribution of samples per action',
                            default=False,
                            optional=True),
+            ConfigItemDesc('use_weights', checks.boolean,
+                           'If using a BOSS-sampler, use importance weights ',
+                           default=False, optional=True),
+            ConfigItemDesc('steps_per_sampler', checks.positive_integer,
+                           'How many steps to take with a sampler before switching with BOSS Sampler',
+                           default=500, optional=True)
         ]
 
     def __init__(self, agent_id_class_map: Dict[int, int], agent_class_action_domains: Dict[int, ActionDomain],
@@ -71,12 +84,12 @@ class BOSS(HierarchicalSystem, AbstractModuleFrame):
         # Shuffle order of samplers list
         old_state = random.getstate()
         random.seed()
+
         # Randomly reorder samplers list
         random.shuffle(config.sampler.samplers_list)
         random.setstate(old_state)
 
         self.samplers_list = config.sampler.samplers_list
-
         self.ucb_coef = config.sampler.ucb_coef
 
         self.optimistic = config.sampler.optimistic if hasattr(config.sampler, 'optimistic') else False
@@ -214,7 +227,6 @@ class BOSS(HierarchicalSystem, AbstractModuleFrame):
         self.state_action_visits_map = {}
 
         for name, pg in self.completion_function_pg[0].items():
-            # if not self.is_primitive(name) or self.use_primitive_distribution:
             if self.collect_abstract:
                 # Use abstracted state space
                 obs_domain = pg.policy.domain_obs

@@ -4,7 +4,7 @@
     "name": "IndependentSystem"
   },
   "sampler": {
-     "name": "MultiSampler",
+     "name": "BOSS",
      "collect_abstract": true,
      "collect_inhibited": true,
      "check_dist": true,
@@ -14,9 +14,9 @@
        "Polled",
        "HUF",
        "TDF_1"
-
-
-     ]
+     ],
+  "steps_per_sampler": 200,
+  "plot_multi": true
    },
   "policy": {
     "name": "FuncApproxPolicy",
@@ -52,7 +52,5 @@
   "use_tuner": false,
   "keep_fraction": 1.0,
   "save_traj": false,
-  "keep_policy": true,
-  "steps_per_sampler": 200,
-  "plot_multi": true
+  "keep_policy": true
 }

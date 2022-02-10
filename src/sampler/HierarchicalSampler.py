@@ -5,6 +5,8 @@ from agentsystem.HierarchicalSystem import HierarchicalSystem
 class HierarchicalSampler(HierarchicalSystem, AbstractModuleFrame):
     """
     An agent system designed for random hierarchical policy sampling for offline learning
+    This method is largely ineffective on most domains
+
     """
 
     def sample_actions(self, observation: np.ndarray, current_node: str, agent_id: int, use_max=False,

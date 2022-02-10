@@ -36,6 +36,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
     Currently designed to only work with LSPI algorithm
     Offers several tuning and optimization algorithms for reducing the number of derived samples used during learning
 
+    Expects a sampler
 
     @author: Eric Miller
     @contact: edm54@case.edu
@@ -43,6 +44,9 @@ class OfflineController(MDPController, AbstractModuleFrame):
     def __init__(self, config: Config, iteration=0, current_date=''):
         sampling_hierarchies_map = {}
         self.eval_episode_max_length = 50
+
+        if not hasattr(config, "sampler"):
+            raise ValueError('Offline analyses require a sampler')
 
         if config.sampler.name == "FlattenedPolledSampler":
             self.derived_samples_hierarchy = copy.deepcopy(config.environment.action_hierarchy)
@@ -95,6 +99,13 @@ class OfflineController(MDPController, AbstractModuleFrame):
             self.evaluation_episode_step = 0
             self.eval_curr_trajectory: TrajectoryCollection = None
             self.sampler_policy_weights_dict = {}
+            self.steps_per_sampler = config.sampler.steps_per_sampler
+            # self.use_weights = config.sampler['use_weights']
+            self.use_weights = False # Weights currently not supported
+
+        else:
+            self.use_weights = False
+            self.steps_per_sample = None
 
         super(OfflineController, self).__init__(config)
 
@@ -111,7 +122,6 @@ class OfflineController(MDPController, AbstractModuleFrame):
         self.save = config.save_samples
         self.name = config.samples_name
 
-        self.steps_per_sampler = config.steps_per_sampler
         self.current_sampler_steps = 0
         self.rotate = True
         self.converted_samples = []
@@ -125,12 +135,9 @@ class OfflineController(MDPController, AbstractModuleFrame):
         self.last_obs = []
         self.iteration = iteration # for naming only
         self.kl_only = config.kl_only
-        self.use_weights = config.use_weights
 
-        print("Use Weights:", self.use_weights)
 
         self._init_basis()
-        self.keep_policy = True
 
         if hasattr(config.sampler, "collect_inhibited"):
             self.collect_inhibited = config.sampler.collect_inhibited
@@ -241,9 +248,6 @@ class OfflineController(MDPController, AbstractModuleFrame):
                                default=True, optional=True),
                 ConfigItemDesc('save_traj', checks.boolean, 'Accumulate all primitive actions',
                                default=False, optional=True),
-                ConfigItemDesc('keep_policy', checks.boolean,
-                               'Should the previous policy be kept when samples added',
-                               default=False, optional=True),
                 ConfigItemDesc('novel_states_count', checks.boolean,
                                'Tracks the number of novel states, action visited',
                                default=False, optional=True),
@@ -254,16 +258,8 @@ class OfflineController(MDPController, AbstractModuleFrame):
                                default=[], optional=True),
                 ConfigItemDesc('kl_only', checks.boolean,
                                'Only get KL, do not learn',
-                               default=False, optional=True),
-                ConfigItemDesc('steps_per_sampler', checks.positive_integer,
-                               'How many steps to take with a sampler before switching with BOSS Sampler',
-                                default=500, optional=True),
-                ConfigItemDesc('use_weights', checks.boolean,
-                                'If using a BOSS-sampler, use importance weights ',
-                                default=False, optional=True),
-                ConfigItemDesc('plot_BOSS', checks.boolean,
-                           'If using a BOSS-sampler, plot results',
-                           default=True, optional=True)
+                               default=False, optional=True)
+
                 ]
 
     def run(self):
@@ -513,16 +509,12 @@ class OfflineController(MDPController, AbstractModuleFrame):
         :param converted_samples: samples that have been converted to a list of [s,a,r,s')
         :param samples: samples that have not been converted to this form yet.
         """
-        if self.keep_policy:
-            print('Keep Policy')
-
         use_sample_num = True if self.config.eval_num_samples != -1 else False
         sample_lens = self.config.eval_num_samples if use_sample_num else self.config.eval_samples
         all_samples = []
 
         if not self.load:
             if use_sample_num:
-                print("Number of Samples!")
                 all_samples = np.asarray(self._create_single_list(converted_samples), dtype=object)
 
             sa_ind_samples, sa_ind_derived_samples, time_to_convert = self._sa_ind_all_samples(all_samples)
@@ -872,28 +864,28 @@ class OfflineController(MDPController, AbstractModuleFrame):
         max_sampler_name = None
         current_samples = np.concatenate((sa_ind_samples, sa_ind_derived_samples))
 
-        if 'boss' in self.sampler_policy_weights_dict:
+        if 'BOSS' in self.sampler_policy_weights_dict:
             self.asys.policy_groups[0].policy.function_approximator.set_weights(
-                self.sampler_policy_weights_dict['boss'])
+                self.sampler_policy_weights_dict['BOSS'])
 
-        # # DO master policy first
+        # # DO BOSS policy first
         self.asys.algorithm.learn(current_samples,
                                   self.asys.policy_groups,
                                   single_list=True,
-                                  sampler="master")
+                                  sampler="BOSS")
 
         reward = self.eval_policy(num_episodes=25, use_eval_environment=True)
-        self.sampler_policy_weights_dict["boss"] = self.asys.policy_groups[0].\
+        self.sampler_policy_weights_dict["BOSS"] = self.asys.policy_groups[0].\
                                                                 policy.\
                                                                 function_approximator.\
                                                                 get_weights()
 
-        reward_dict["master"] = reward
+        reward_dict["BOSS"] = reward
 
-        if "Master" not in self.sampler_reward_dict:
-            self.sampler_reward_dict["Master"] = []
+        if "BOSS" not in self.sampler_reward_dict:
+            self.sampler_reward_dict["BOSS"] = []
 
-        self.sampler_reward_dict["Master"].append(reward)
+        self.sampler_reward_dict["BOSS"].append(reward)
 
         for sampler_name, obj in self.sampler.sampler_object_dict.items():
             if sampler_name in sa_ind_samples_per_sampler:
@@ -946,7 +938,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
 
         self._set_boss_sampler(max_sampler_obj, max_sampler_name)
         self.lens.append(num_samples)
-        self.rewards.append(reward_dict["master"])
+        self.rewards.append(reward_dict["BOSS"])
         self.episode_max_length = episode_max_length
         return time_to_subtract
 
@@ -1108,7 +1100,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
         :param converted_samples:
         :return:
         """
-        assert isinstance(self.sampler, BOSS.BOSS), 'Only boss-Sampler needs this'
+        assert isinstance(self.sampler, BOSS.BOSS), 'Only BOSS needs this'
         sampler_probability_map = {}
         for sampler, obj in self.sampler.sampler_object_dict.items():
             sampler_probability_map[sampler] = []
@@ -1792,7 +1784,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
         helper function for check distribution
         """
         if self.sampler.check_dist:
-            k = "Master"
+            k = "BOSS"
             x = self._check_sample_distribution(mapped_s)
             if k not in self.sampler.sampler_dist_dict:
                 self.sampler.sampler_dist_dict[k] = x

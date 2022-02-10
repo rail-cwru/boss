@@ -160,7 +160,7 @@ class Evaluate(Callback):
             self.controller.episode_max_length = old_len
 
             mean_over_eval = np.mean(mean_rewards)
-            #print('Average Reward with Exploit: {}'.format(mean_over_eval))
+            print('Average Reward with Exploit: {}'.format(mean_over_eval))
 
             if self.save_best_mean and mean_over_eval > self.best_exploit_mean:
                 target = self.save_best_mean + '.npz'

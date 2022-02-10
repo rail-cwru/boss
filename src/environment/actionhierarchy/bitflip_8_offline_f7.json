@@ -48,8 +48,7 @@
         "Flip_2" : [],
         "Flip_4" : [],
         "Flip_5" : [],
-        "Flip_6" : [],
-        "Flip_7": []
+        "Flip_6" : []
       },
       "termination": [
         "ALL p: i_zero[p] == 0"
