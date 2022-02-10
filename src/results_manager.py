@@ -49,18 +49,18 @@ class ResultsManager():
         self.novel_sa = []
         self.current_date = datetime.datetime.now()
 
-        self.multi_rew_dict = {}
-        self.multi_ucb_dict = {}
-        self.multi_cum_rew_dict = {}
-        self.multi_cum_ucb_dict = {}
+        self.boss_rew_dict = {}
+        self.boss_ucb_dict = {}
+        self.boss_cum_rew_dict = {}
+        self.boss_cum_ucb_dict = {}
         self.offline = offline
-        self.multi_schedule_list = []
+        self.boss_schedule_list = []
 
 
         self.dir_name = None
 
 
-    def after_run(self, config, controller, save_name, is_multi, collect_novel, iteration):
+    def after_run(self, config, controller, save_name, is_boss, collect_novel, iteration):
         # This section looks at saving and displaying the results
         if 'DispResults' in config.callbacks:
             self._display_results(controller)
@@ -83,15 +83,15 @@ class ResultsManager():
 
         self._display_offline()
 
-        if is_multi:
+        if is_boss:
             if iteration == 0:
-                self.initialize_multi_dict(controller)
+                self.initialize_boss_dict(controller)
 
-            self.append_multi(controller)
-            self.plot_multi(controller, iteration)
+            self.append_boss(controller)
+            self.plot_boss(controller, iteration)
 
         # if self.offline:
-        ch_dir = self.save_all_lists(controller, save_name, is_multi, collect_novel)
+        ch_dir = self.save_all_lists(controller, save_name, is_boss, collect_novel)
 
         if ch_dir:
             os.chdir('..')
@@ -158,40 +158,40 @@ class ResultsManager():
         for i in self.eval_arr:
             print(i)
 
-    def initialize_multi_dict(self, controller):
+    def initialize_boss_dict(self, controller):
         for k, v in controller.sampler_reward_dict.items():
-            self.multi_rew_dict[k] = []
-            self.multi_ucb_dict[k] = []
-            self.multi_cum_rew_dict[k] = []
-            self.multi_cum_ucb_dict[k] = []
+            self.boss_rew_dict[k] = []
+            self.boss_ucb_dict[k] = []
+            self.boss_cum_rew_dict[k] = []
+            self.boss_cum_ucb_dict[k] = []
 
-    def append_multi(self, controller):
+    def append_boss(self, controller):
         for k, v in controller.sampler_reward_dict.items():
 
-            if k is not 'Master':
+            if k is not 'BOSS':
                 # print(k, 'Rewards', v)
-                self.multi_rew_dict[k].append(v)
-                self.multi_ucb_dict[k].append(controller.sampler_ucb_dict[k])
+                self.boss_rew_dict[k].append(v)
+                self.boss_ucb_dict[k].append(controller.sampler_ucb_dict[k])
                 # print(k, 'UCB:', controller.sampler_ucb_dict[k])
                 print('UCB', k, ':')
-                for i in self.multi_ucb_dict[k]:
+                for i in self.boss_ucb_dict[k]:
                     cum_ucb = [x for x in np.maximum.accumulate(i)]
-                    self.multi_cum_ucb_dict[k].append(cum_ucb)
+                    self.boss_cum_ucb_dict[k].append(cum_ucb)
                     print(cum_ucb)
                     # print(cum_ucb)
                 print('Rewards', k, ':')
-                for i in self.multi_rew_dict[k]:
+                for i in self.boss_rew_dict[k]:
                     cum_rew = [x for x in np.maximum.accumulate(i)]
-                    self.multi_cum_rew_dict[k].append(cum_rew)
+                    self.boss_cum_rew_dict[k].append(cum_rew)
                     print(cum_rew)
 
-        self.multi_schedule_list.append(controller.sampler_schedule_arr)
+        self.boss_schedule_list.append(controller.sampler_schedule_arr)
         print('Schedule:')
-        for i in self.multi_schedule_list:
+        for i in self.boss_schedule_list:
             print(i)
 
 
-    def plot_multi(self, controller, iteration):
+    def plot_boss(self, controller, iteration):
         linestyle_tuple = [
             ('loosely dotted', (0, (1, 10))),
             ('dotted', (0, (1, 1))),
@@ -211,12 +211,12 @@ class ResultsManager():
 
         count = 0
         for k, v in controller.sampler_reward_dict.items():
-            if k is not "Master":
-                plt.plot(self.len_arr[-1], self.multi_ucb_dict[k][-1], label=k,
+            if k is not "BOSS":
+                plt.plot(self.len_arr[-1], self.boss_ucb_dict[k][-1], label=k,
                          linestyle=linestyle_tuple[count][-1])
                 count += 1
         plt.legend()
-        plt.title('Multi-Sampler UCB Vs. Samplers Collected')
+        plt.title('BOSS UCB Vs. Samplers Collected')
 
         # plt.xlim(0, np.mean(len_arr, axis = 0)[-1])
         plt.xlabel('Samples Collected (all)')
@@ -225,23 +225,23 @@ class ResultsManager():
         plt.savefig('UCB_' + str(iteration) + '.png')
 
         os.chdir('..')
-        self.multi_rew_dict["Master"].append(controller.sampler_reward_dict['Master'])
+        self.boss_rew_dict["BOSS"].append(controller.sampler_reward_dict['BOSS'])
 
-        print('Rewards', "Master", ':')
-        for i in self.multi_rew_dict["Master"]:
+        print('Rewards', "Boss", ':')
+        for i in self.boss_rew_dict["BOSS"]:
             cum_ucb = [x for x in np.maximum.accumulate(i)]
-            self.multi_cum_rew_dict["Master"].append(cum_ucb)
+            self.boss_cum_rew_dict["BOSS"].append(cum_ucb)
             print(cum_ucb)
 
         count = 0
 
         plt.clf()
         for k, v in controller.sampler_reward_dict.items():
-            plt.plot(self.len_arr[-1], self.multi_cum_rew_dict[k][-1], label=k,
+            plt.plot(self.len_arr[-1], self.boss_cum_rew_dict[k][-1], label=k,
                      linestyle=linestyle_tuple[count][-1])
             count += 1
         plt.legend()
-        plt.title('Multi-Sampler Rewards Vs. Samples Collected:' + str(iteration))
+        plt.title('BOSS Rewards Vs. Samples Collected:' + str(iteration))
 
         # plt.xlim(0, np.mean(len_arr, axis = 0)[-1])
         plt.xlabel('Samples Collected (all)')
@@ -272,12 +272,12 @@ class ResultsManager():
         plt.clf()
         count = 0
         for k, v in controller.sampler_reward_dict.items():
-            if k is not "Master":
-                plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.multi_ucb_dict[k], axis=0), label=k,
+            if k is not "BOSS":
+                plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.boss_ucb_dict[k], axis=0), label=k,
                          linestyle=linestyle_tuple[count][-1])
                 count += 1
         plt.legend()
-        plt.title('Multi-Sampler UCB Vs. Samplers Collected')
+        plt.title('BOSS UCB Vs. Samplers Collected')
 
         # plt.xlim(0, np.mean(len_arr, axis = 0)[-1])
         plt.xlabel('Samples Collected (all)')
@@ -286,13 +286,13 @@ class ResultsManager():
 
         ## Plot each sampler:
         for k, v in controller.sampler_reward_dict.items():
-            if k is not "Master":
+            if k is not "BOSS":
                 plt.clf()
 
-                plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.multi_ucb_dict[k], axis=0), label='UCB',
+                plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.boss_ucb_dict[k], axis=0), label='UCB',
                          linestyle=linestyle_tuple[0][-1])
 
-                plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.multi_rew_dict[k], axis=0), label="REW",
+                plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.boss_rew_dict[k], axis=0), label="REW",
                          linestyle=linestyle_tuple[1][-1])
                 plt.title('UCB vs. Rew: ' + k)
                 plt.xlabel('Samples Collected')
@@ -304,11 +304,11 @@ class ResultsManager():
 
         count = 0
         for k, v in controller.sampler_reward_dict.items():
-            plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.multi_cum_rew_dict[k], axis=0), label=k,
+            plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.boss_cum_rew_dict[k], axis=0), label=k,
                      linestyle=linestyle_tuple[count][-1])
             count += 1
         plt.legend()
-        plt.title('Multi-Sampler Rewards Vs. Samples Collected')
+        plt.title('BOSS Rewards Vs. Samples Collected')
 
         # plt.xlim(0, np.mean(len_arr, axis = 0)[-1])
         plt.xlabel('Samples Collected (all)')
@@ -319,12 +319,12 @@ class ResultsManager():
 
         count = 0
         for k, v in controller.sampler_reward_dict.items():
-            if k is not "Master":
-                plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.multi_ucb_dict[k], axis=0), label=k,
+            if k is not "BOSS":
+                plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.boss_ucb_dict[k], axis=0), label=k,
                          linestyle=linestyle_tuple[count][-1])
                 count += 1
         plt.legend()
-        plt.title('Multi-Sampler UCB Vs. Samplers Collected')
+        plt.title('BOSS UCB Vs. Samplers Collected')
 
         # plt.xlim(0, np.mean(len_arr, axis = 0)[-1])
         plt.xlabel('Samples Collected (all)')
@@ -333,13 +333,13 @@ class ResultsManager():
 
         ## Plot each sampler:
         for k, v in controller.sampler_reward_dict.items():
-            if k is not "Master":
+            if k is not "BOSS":
                 plt.clf()
 
-                plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.multi_ucb_dict[k], axis=0), label='UCB',
+                plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.boss_ucb_dict[k], axis=0), label='UCB',
                          linestyle=linestyle_tuple[0][-1])
 
-                plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.multi_rew_dict[k], axis=0), label="REW",
+                plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.boss_rew_dict[k], axis=0), label="REW",
                          linestyle=linestyle_tuple[1][-1])
                 plt.title('UCB vs. Rew: ' + k)
                 plt.xlabel('Samples Collected')
@@ -364,7 +364,7 @@ class ResultsManager():
             count_dict = {}
 
             l_c = 0
-            for j in self.multi_schedule_list:
+            for j in self.boss_schedule_list:
                 if j[i] not in count_dict:
                     count_dict[j[i]] = 1
                 else:
@@ -482,7 +482,7 @@ class ResultsManager():
             for ind, i in enumerate(list):
                 txt_file.write("[" + str(i)[1:-1] + "]\n")
 
-    def save_all_lists(self, controller, save_name, is_multi, collect_novel=False):
+    def save_all_lists(self, controller, save_name, is_boss, collect_novel=False):
         ch_dir = False
 
         print()
@@ -508,12 +508,12 @@ class ResultsManager():
             self.save_list(controller.kl_divergences, 'kl_', save_name)
             self.save_list(controller.kl_lens, 'kl_lens_', save_name)
 
-        if is_multi:
-            self.save_list(self.multi_schedule_list, 'schedule_', save_name)
+        if is_boss:
+            self.save_list(self.boss_schedule_list, 'schedule_', save_name)
             for k, v in controller.sampler_reward_dict.items():
-                self.save_list(self.multi_rew_dict[k], k + '_rew_', save_name)
-                self.save_list(self.multi_ucb_dict[k], k + '_ucb_', save_name)
-                self.save_list(self.multi_ucb_dict[k], k + '_ucb_', save_name)
+                self.save_list(self.boss_rew_dict[k], k + '_rew_', save_name)
+                self.save_list(self.boss_ucb_dict[k], k + '_ucb_', save_name)
+                self.save_list(self.boss_ucb_dict[k], k + '_ucb_', save_name)
 
         if controller.save_traj:
             print('Trajectories:')

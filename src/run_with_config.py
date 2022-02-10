@@ -65,7 +65,7 @@ if __name__ == '__main__':
             config = Config(MDPController, data, relative_path=path)
             controller = MDPController(config)
 
-        is_boss = hasattr(config, "sampler") and config.sampler.name == 'Boss'
+        is_boss = hasattr(config, "sampler") and config.sampler.name == 'BOSS'
 
         if hasattr(config, 'samples_name') and config.samples_name is not '':
             save_name = config.samples_name
