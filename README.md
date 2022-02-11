@@ -37,7 +37,7 @@ All runs accept the following arguments in the config file:
 - samples_name(for saving)
 
 
-The offline controller is expecting several outputs that ub addition to those for online learning. Here are some of the important ones:
+The offline controller is expecting several inputs in addition to those for online learning. Here are some of the important ones:
 - kl_divergence: will plot kl divergence for each sample threshold in this list. The target distribution is to be passed into the sampler as "save_name" (this also is how you save a distribution:
 - novel_states_count: Tracks the number of novel states encountered as a function of samples collected
 - save_samples: Will save the list of samples for future use (list may be large!).
