@@ -1,5 +1,5 @@
 {
-  "environment": "../src/environment/heist_power_polled_wall_100_lock_100.json",
+  "environment": "../../src/environment/heist_power_polled_wall_100_lock_100.json",
   "agentsystem": {
     "name": "IndependentSystem"
   },

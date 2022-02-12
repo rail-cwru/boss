@@ -1,10 +1,10 @@
 {
-  "environment": "../src/environment/heist_polled.json",
+  "environment": "../../src/environment/heist_polled.json",
   "agentsystem": {
     "name": "IndependentSystem"
   },
   "sampler": {
-     "name": "MultiSampler",
+     "name": "BOSS",
      "collect_abstract": true,
      "collect_inhibited": true,
      "min_reward": -50,

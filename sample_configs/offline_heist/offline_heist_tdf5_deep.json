@@ -1,5 +1,5 @@
 {
-  "environment": "../src/environment/heist_polled_deep.json",
+  "environment": "../../src/environment/heist_polled_deep.json",
   "agentsystem": {
     "name": "IndependentSystem"
   },
