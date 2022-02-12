@@ -1,5 +1,0 @@
-{
-  "name": "BitFlip",
-  "action_hierarchy": "./actionhierarchy/bitflip_8_offline_f5.json",
-  "num_bits": 8
-}
