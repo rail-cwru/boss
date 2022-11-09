@@ -1,4 +1,4 @@
-# BOSS 
+# Biased Offline Sampler Selector
 
 This is an RL Framework with both online and offline capabilities. 
 That said, it is made available to accompany a paper on offline hierarchical RL. 
