@@ -1,0 +1,53 @@
+{
+  "environment": "../../src/environment/heist_power_polled_wall_100_lock_100.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "sampler": {
+     "name": "BOSS",
+     "collect_abstract": true,
+     "collect_inhibited": true,
+     "min_reward": -50,
+     "ucb_coef": 4.0,
+     "samplers_list": [
+       "HUF",
+       "Polled",
+       "TDF_3",
+       "BUF_5"
+     ],
+    "steps_per_sampler": 1618
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 1.0
+  },
+  "callbacks": [
+
+  ],
+  "episodes": -1,
+  "samples_target": 30000,
+  "episode_max_length": 1618,
+  "eval_samples" : -1,
+ "eval_num_samples": [6472, 8090, 9708, 11326, 12944, 14562, 16180, 17798, 19416, 21034, 22652, 24270, 25888, 27506, 29124, 30742, 35000],
+    "save_samples": true,
+  "samples_name": "power_heist_boss_7_7",
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 1.0,
+  "save_traj": false,
+  "keep_policy": true,
+  "plot_multi": true,
+  "eval_max_length": 30
+}

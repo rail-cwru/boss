@@ -1,0 +1,53 @@
+{
+   "environment": "../../src/environment/ikea_chair_plane_hierarchy_small.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "sampler": {
+   "name": "BOSS",
+     "collect_abstract": true,
+     "collect_inhibited": true,
+     "min_reward": -50,
+     "ucb_coef": 4.0,
+     "samplers_list": [
+       "HUF",
+       "Polled",
+       "BUF_2",
+       "TDF_1"
+     ],
+     "steps_per_sampler": 1024
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 1.0
+  },
+  "callbacks": [
+
+  ],
+  "episodes": -1,
+  "samples_target": 100000,
+  "episode_max_length": 1024,
+  "eval_samples" : -1,
+  "eval_num_samples": [4099, 5780, 7461, 9142, 10823, 12504, 14185, 15866, 17547, 19228, 20909, 22590, 24271, 25952, 27633, 29314, 30995, 32676, 34357, 36038, 37719, 39400, 41081, 42762, 44443, 46124, 47805, 49486, 51167, 52848, 54529, 56210, 57891, 59572, 61253, 62934, 64615, 66296, 67977, 69658, 71339, 73020, 74701, 76382, 78063, 79744, 81425, 83106, 84787, 86468, 88149, 89830, 91511, 93192, 94873, 96554, 98235, 99916, 101597],
+  "save_samples": true,
+  "samples_name": "chair_boss_plane_small",
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 1.0,
+  "save_traj": true,
+  "keep_policy": true,
+  "novel_states_count": false,
+  "eval_max_length": 40
+}

@@ -1,0 +1,53 @@
+
+{
+  "environment": "../../src/environment/heist_large.json",
+  "agentsystem": {
+    "name": "IndependentSystem"
+  },
+  "sampler": {
+     "name": "BOSS",
+     "collect_abstract": true,
+     "collect_inhibited": true,
+     "min_reward": -50,
+     "ucb_coef": 4.0,
+     "samplers_list": [
+       "HUF",
+       "Polled",
+       "TDF_5",
+       "BUF_3"
+     ],
+    "steps_per_sampler": 1666
+  },
+  "policy": {
+    "name": "FuncApproxPolicy",
+    "function_approximator": {
+      "name": "SimpleLinear",
+      "use_bias": false,
+      "basis_function": "ExactBasis"
+    },
+    "policy_sampler": {
+      "name": "DiscreteBoltzmann",
+      "temperature": 1.0
+    }
+  },
+  "algorithm": {
+    "name": "LSPI",
+    "discount_factor": 1.0
+  },
+  "callbacks": [
+
+  ],
+ "episodes": -1,
+  "samples_target": 300000,
+  "episode_max_length": 1666,
+  "eval_samples" : -1,
+ "eval_num_samples": [6660, 9488, 12316, 15144, 17972, 20800, 23628, 26456, 29284, 32112, 34940, 37768, 40596, 43424, 46252, 49080, 51908, 54736, 57564, 60392, 63220, 66048, 68876, 71704, 74532, 77360, 80188, 83016, 85844, 88672, 91500, 94328, 97156, 99984, 102812, 105640, 108468, 111296, 114124, 116952, 119780, 122608, 125436, 128264, 131092, 133920, 136748, 139576, 142404, 145232, 148060, 150888, 153716, 156544, 159372, 162200, 165028, 167856, 170684, 173512, 176340, 179168, 181996, 184824, 187652, 190480, 193308, 196136, 198964, 201792, 204620, 207448, 210276, 213104, 215932, 218760, 221588, 224416, 227244, 230072, 232900, 235728, 238556, 241384, 244212, 247040, 249868, 252696, 255524, 258352, 261180, 264008, 266836, 269664, 272492, 275320, 278148, 280976, 283804, 286632, 289460, 292288, 295116, 297944, 300772],
+ "samples_name": "heist_multi_deep_large_7_75_4",
+  "load": false,
+  "use_tuner": false,
+  "keep_fraction": 1.0,
+  "save_traj": false,
+  "keep_policy": true,
+  "plot_multi": true,
+  "eval_max_length": 40
+}
