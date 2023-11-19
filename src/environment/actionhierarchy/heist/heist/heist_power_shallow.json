@@ -1,0 +1,389 @@
+{
+  "state_variables": [
+    "agent_loc",
+    "blue_key_loc",
+    "orange_key_loc",
+    "green_key_loc",
+    "blue_lock_loc",
+    "green_lock_loc",
+    "orange_lock_loc",
+    "gem_loc"
+  ],
+  "actions": {
+    "Root": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_key_loc",
+        "orange_key_loc",
+        "green_key_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ],
+      "params": {},
+      "parents": [],
+      "children": {
+        "Complex_Task": [],
+        "Simple_Task": []
+      },
+      "termination": [
+        "gem_loc == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Simple_Task": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_key_loc",
+        "orange_key_loc",
+        "green_key_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ],
+      "params": {},
+      "parents": ["Root"],
+      "children": {
+        "Pickup_gem": [],
+        "Power_Move": []
+      },
+      "termination": [
+        "gem_loc == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Complex_Task": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_key_loc",
+        "orange_key_loc",
+        "green_key_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc"
+      ],
+      "params": {},
+      "parents": ["Root"],
+      "children": {
+        "Pickup_orange": [],
+        "Pickup_gem": [],
+        "Open_O": [],
+        "Navigate_O": ["Orange"],
+        "Navigate_Gem": ["Gem"],
+        "Open_Green": []
+      },
+      "termination": [
+        "gem_loc == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Open_Green": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_key_loc",
+        "green_key_loc",
+        "blue_lock_loc",
+        "green_lock_loc"
+      ],
+      "params": {},
+      "parents": [
+        "Root"
+      ],
+      "children": {
+        "Pickup_green": [],
+        "Navigate_G": [
+          "Green"
+        ],
+        "Open_G": [],
+        "Open_Blue": []
+      },
+      "termination": [
+        "green_lock_loc == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Open_Blue": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_key_loc",
+        "blue_lock_loc"
+      ],
+      "params": {},
+      "parents": [
+        "Open_Green"
+      ],
+      "children": {
+        "Pickup_blue": [],
+        "Navigate_B": [
+          "Blue"
+        ],
+        "Open_B": []
+      },
+      "termination": [
+        "blue_lock_loc == 1"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_O": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "green_lock_loc"
+      ],
+      "params": {
+        "target": [
+          "Orange"
+        ]
+      },
+      "parents": [
+        "Root"
+      ],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "agent_loc == target",
+        "green_lock_loc == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_G": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "blue_lock_loc"
+      ],
+      "params": {
+        "target": [
+          "Green"
+        ]
+      },
+      "parents": [
+        "Open_Green"
+      ],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "agent_loc == target",
+        "blue_lock_loc == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_B": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc"
+      ],
+      "params": {
+        "target": [
+          "Blue"
+        ]
+      },
+      "parents": [
+        "Open_Blue"
+      ],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "agent_loc == target"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Navigate_Gem": {
+      "primitive": false,
+      "state_variables": [
+        "agent_loc",
+        "orange_lock_loc"
+      ],
+      "params": {
+        "target": [
+          "Gem"
+        ]
+      },
+      "parents": [
+        "Root"
+      ],
+      "children": {
+        "North": [],
+        "South": [],
+        "East": [],
+        "West": []
+      },
+      "termination": [
+        "agent_loc == target",
+        "orange_lock_loc == 0"
+      ],
+      "pseudo_r": [
+        []
+      ]
+    },
+    "Pickup_orange": {
+      "primitive": true,
+      "parents": [
+        "Root"
+      ]
+    },
+    "Open_O": {
+      "primitive": true,
+      "parents": [
+        "Root"
+      ]
+    },
+    "Pickup_green": {
+      "primitive": true,
+      "parents": [
+        "Open_Green"
+      ]
+    },
+    "Open_G": {
+      "primitive": true,
+      "parents": [
+        "Open_Green"
+      ]
+    },
+    "Pickup_blue": {
+      "primitive": true,
+      "parents": [
+        "Open_Blue"
+      ]
+    },
+    "Pickup_gem": {
+      "primitive": true,
+      "parents": [
+        "Simple_task",
+        "Complex_task"
+      ]
+    },
+    "Open_B": {
+      "primitive": true,
+      "parents": [
+        "Open_Blue"
+      ]
+    },
+    "Power_Move": {
+      "primitive": true,
+      "parents": [
+        "Simple_Task"
+      ],
+      "state_variables": [
+        "agent_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc",
+        "gem_loc",
+        "blue_key_loc",
+        "green_key_loc",
+        "orange_key_loc"
+      ]
+    },
+    "North": {
+      "primitive": true,
+      "parents": [
+        "Navigate_O",
+        "Navigate_G",
+        "Navigate_B",
+        "Navigate_Gem"
+      ],
+      "state_variables": [
+        "agent_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc"
+      ]
+    },
+    "East": {
+      "primitive": true,
+      "parents": [
+        "Navigate_O",
+        "Navigate_G",
+        "Navigate_B",
+        "Navigate_Gem"
+      ],
+      "state_variables": [
+        "agent_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc"
+      ]
+    },
+    "South": {
+      "primitive": true,
+      "parents": [
+        "Navigate_O",
+        "Navigate_G",
+        "Navigate_B",
+        "Navigate_Gem"
+      ],
+      "state_variables": [
+        "agent_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc"
+      ]
+    },
+    "West": {
+      "primitive": true,
+      "parents": [
+        "Navigate_O",
+        "Navigate_G",
+        "Navigate_B",
+        "Navigate_Gem"
+      ],
+      "state_variables": [
+        "agent_loc",
+        "blue_lock_loc",
+        "green_lock_loc",
+        "orange_lock_loc"
+      ]
+    }
+  },
+  "primitive_action_map": {
+    "Pickup_blue": 4,
+    "Pickup_green": 5,
+    "Pickup_orange": 6,
+    "Pickup_gem": 7,
+    "Open_B": 8,
+    "Open_G": 9,
+    "Open_O": 10,
+    "North": 0,
+    "South": 1,
+    "East": 2,
+    "West": 3,
+    "Power_Move": 11
+  }
+}
