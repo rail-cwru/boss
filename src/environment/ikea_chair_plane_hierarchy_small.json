@@ -1,0 +1,4 @@
+{
+  "name": "IkeaChairPlaneSmall",
+  "action_hierarchy": "./actionhierarchy/ikea_chair_plane_small.json"
+}
