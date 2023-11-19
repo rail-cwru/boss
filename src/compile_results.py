@@ -26,12 +26,19 @@ with open('master_rew.txt', 'wb') as f:
     for i in os.listdir('.'):
         print(i)
         if os.path.isdir(i):
+
             for x in os.listdir(i):
                 if 'cummax' in x and 'pkl' in x:
                     with open(i + '/' + x, 'rb') as f2:
                         arr = pkl.load(f2)
                         for arr_value in arr:
                             cummax.append(arr_value)
+                            print('---------------------------------')
+                            print(type(arr_value))
+                            print(arr_value)
+                            print('---------------------------------')
+
+                            # raise NotImplementedError
 
 
                 elif 'eval' in x and 'pkl' in x:
@@ -63,21 +70,49 @@ with open('master_rew.txt', 'wb') as f:
     sce = np.asarray(schedule)
     rt_np = np.asarray(rt)
 
-    for i in cummax:
-        print(i)
+    #print(cmax)
 
-    np.savetxt('cummax_master.txt', cmax)
+    for ind, i in enumerate(cummax):
+        cummax[ind] = np.asarray(i, dtype=np.float64)
 
-    with open('cummax_master.pkl', 'wb') as f2:
-        pkl.dump(cummax, f2)
+    print(cummax)
+    print(cmax)
 
-    np.savetxt('eval_master.txt', evl)
 
-    np.savetxt('len_master.txt', lns)
-    np.savetxt('rt_master.txt', rt_np)
+    cmax_array = []
+    for c in cummax:
+        cmax_array.append([float(i) for i in c])
 
-    for i in sce:
-        print(i)
+    try:
+        np.savetxt('cummax_master.txt', cummax)
+    except:
+        pass
+
+
+    try:
+        with open('cummax_master.pkl', 'wb') as f2:
+            pkl.dump(cummax, f2)
+    except:
+        try:
+            with open('cummax_master.pkl', 'wb') as f2:
+                pkl.dump(cmax_array, f2)
+
+        except:
+            pass
+
+
+    try:
+
+        np.savetxt('eval_master.txt', evl)
+
+        np.savetxt('len_master.txt', lns)
+        np.savetxt('rt_master.txt', rt_np)
+    except :
+        pass
+
+
+    # for i in sce:
+    #     print(i)
 
     with open('len_master.pkl', 'wb') as f2:
         pkl.dump(lens, f2)

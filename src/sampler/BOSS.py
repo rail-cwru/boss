@@ -8,7 +8,10 @@ from agentsystem.HierarchicalSystem import HierarchicalSystem
 from config import Config, checks
 from policy.function_approximator.basis_function.ExactBasis import ExactBasis
 from sampler import PolledSampler, HierarchicalUniform, FlattenedPolledSampler
+from domain.features import CoordinateFeature, DiscreteFeature, BinaryFeature
 import random
+import itertools
+import copy as copy
 
 class BOSS(HierarchicalSystem, AbstractModuleFrame):
     """
@@ -377,3 +380,90 @@ class BOSS(HierarchicalSystem, AbstractModuleFrame):
 
     def get_per_sample_derived(self):
         return self.per_sample_derived
+
+    def get_all_reachable_non_term_actions(self, observation, parent, agent_id):
+        """
+        Entry point for helper method to find all of the primitive actions that are not terminated
+        """
+        non_term_prim, reachable_subtasks = self._add_derived_non_term_action(observation, parent, [], [], agent_id)
+        return non_term_prim, reachable_subtasks
+
+    def _add_derived_non_term_action(self, observation, parent, non_term_prim, reachable_subtask, agent_id=0):
+        """
+        Returns the all primitive actions reachable from parent
+        Adds the terminated actions to a global list
+        """
+        for child in self.get_action_children(parent):
+            if self.is_primitive(child) and child not in non_term_prim:
+                non_term_prim.append(child)
+            elif not self.is_terminated(child, observation, agent_id):
+                reachable_subtask.append(child)
+                non_term_prim, reachable_subtask = self._add_derived_non_term_action(observation, child, non_term_prim, reachable_subtask, agent_id)
+            elif not self.is_primitive(child):
+                if not self.term_subtasks:
+                    self.term_subtasks[agent_id] = []
+                self.term_subtasks[agent_id].append(child)
+        return non_term_prim, reachable_subtask
+
+    def get_irrelevant_states(self, observation, policy_group, agent_id, s_prime_in):
+        '''
+        Finds the state variables that are irrelevant based on hierarchy
+        :param observation: Current (non-abstracted) observation
+        :param policy_group: policy group of current node (parent of primitive/primitive)
+        :param agent_id:
+        :return: Abstract states and sprimes based on the input observation
+        '''
+        agent_class = self.agent_id_class_map[agent_id]
+        root_pg = self.policy_groups[agent_class]
+        full_obs_domain = root_pg.policy.domain_obs
+        item_slices = []
+        item_values = []
+        # Find the irrelevant state variables
+        for item in full_obs_domain.items:
+            if item not in policy_group.policy.domain_obs.items:
+                item_vals = self._get_feature_range(item)
+                domain_slice = self.agent_slice_dict[agent_class][item.name]
+                item_slices.append(domain_slice)
+                item_values.append(item_vals)
+
+        # Get all combinations of state variables
+        irrelevant_state_value_pairs = list(itertools.product(*item_values))
+        states = []
+        s_primes = []
+
+        # Change just the irrelevant values and append to list
+        for state_pair in irrelevant_state_value_pairs:
+            state = copy.copy(observation)
+            s_prime = copy.copy(s_prime_in)
+            for ind, value in enumerate(state_pair):
+                domain_slice = item_slices[ind]
+                if type(value) == list:
+                    state[domain_slice] = value
+                    s_prime[domain_slice] = value
+                else:
+                    state[domain_slice] = [value]
+                    s_prime[domain_slice] = [value]
+            if not np.all(state == observation):
+                states.append(copy.deepcopy(state))
+                s_primes.append(copy.deepcopy(s_prime))
+
+        return states, s_primes
+
+    def _get_feature_range(self, item):
+        """
+        Returns the range of values for a feature of different types
+        Useful for abstract samples
+        """
+        if isinstance(item, DiscreteFeature):
+            item_vals = [i for i in range(item.range.start, item.range.stop)]
+
+        elif isinstance(item, CoordinateFeature):
+            if item.sparse_values:
+                item_vals = item.sparse_values
+            else:
+                item_vals = [i for i in range(item.lower, item.upper)]
+        elif isinstance(item, BinaryFeature):
+            item_vals = [0, 1]
+        else:
+            raise ValueError("Only Discrete, Binary and Coordinate Features Supported")
+        return item_vals

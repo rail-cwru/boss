@@ -353,7 +353,8 @@ class LSPI(Algorithm):
 
         for ind, sample in enumerate(samples):
             sa_ind = sample[0]
-            if sample[-1] == []:
+
+            if len(sample[-1]) == 0:
                 # Ended episode
                 sprime_ind = -1
             else:

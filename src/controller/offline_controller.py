@@ -43,8 +43,8 @@ class OfflineController(MDPController, AbstractModuleFrame):
     """
     def __init__(self, config: Config, iteration=0, current_date=''):
         sampling_hierarchies_map = {}
-        self.eval_episode_max_length = 50
-
+        self.eval_episode_max_length = config.eval_max_length
+        self.is_etc = False
         if not hasattr(config, "sampler"):
             raise ValueError('Offline analyses require a sampler')
 
@@ -71,9 +71,14 @@ class OfflineController(MDPController, AbstractModuleFrame):
                 raise NotImplementedError('Only BUF and TDF supported')
 
             config.environment.action_hierarchy['actions'] = h
-        elif config.sampler.name == "BOSS":
+        elif config.sampler.name == "BOSS" or config.sampler.name == "ETC":
+            self.is_etc = config.sampler.name == 'ETC'
+
+            self.sampler_tag = "ETC" if self.is_etc else "BOSS"
+
             self.sampler_ind_dict = {}
             keep_navigate = config.sampler.keep_navigate if hasattr(config.sampler, 'keep_navigate') else False
+            self.set_once = False
             for samplers in config.sampler.samplers_list:
                 if "TDF" in samplers or "BUF" in samplers:
                     split_name = samplers.split('_')
@@ -91,6 +96,8 @@ class OfflineController(MDPController, AbstractModuleFrame):
                     ah_copy = copy.deepcopy(config.environment.action_hierarchy)
                     ah_copy['actions'] = h
                     sampling_hierarchies_map[samplers] = ah_copy
+
+            self.sampling_len_lst = []
             self.sampler_reward_dict = {}
             self.sampler_ucb_dict = {}
             self.sampler_schedule_arr = []
@@ -135,8 +142,6 @@ class OfflineController(MDPController, AbstractModuleFrame):
         self.last_obs = []
         self.iteration = iteration # for naming only
         self.kl_only = config.kl_only
-
-
         self._init_basis()
 
         if hasattr(config.sampler, "collect_inhibited"):
@@ -173,7 +178,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
         config_name = config.sampler.name
         print(config_name + ", has second hierarchy:", config.sampler.name == "FlattenedPolledSampler")
 
-        if config_name == "BOSS":
+        if config_name == "BOSS" or config_name == "ETC":
 
             for k, h in sampling_hierarchies_map.items():
                 flattened_action_hierarchy = action_hierarchy_from_config(h)
@@ -258,7 +263,9 @@ class OfflineController(MDPController, AbstractModuleFrame):
                                default=[], optional=True),
                 ConfigItemDesc('kl_only', checks.boolean,
                                'Only get KL, do not learn',
-                               default=False, optional=True)
+                               default=False, optional=True),
+            ConfigItemDesc('eval_max_length', checks.positive_integer, 'Max length of any eval episode',
+                           default=50, optional=True)
 
                 ]
 
@@ -268,7 +275,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
         First all of the samples are collected, then the policy is learned
         """
 
-        if self.config.sampler.name == "BOSS":
+        if self.config.sampler.name == "BOSS" or self.config.sampler.name == 'ETC':
             self.run_BOSS()
         else:
             self.before_run()
@@ -396,10 +403,19 @@ class OfflineController(MDPController, AbstractModuleFrame):
                 self.sampler_ind_dict = {}
                 self.initialize_episode(num_samples, episode_num)
 
-                episode_trajectory, last_obs, done, num_samples, not_added_index, time_to_subtract = self.run_boss_sample(num_samples, sample_lens, sa_ind_samples, sa_ind_derived_samples,
-                                                                                                         sa_ind_samples_per_sampler, sampler_probability_map,
-                                                                                                         episode_num, weights_dict, derived_weights_dict, sa_ind_derived_samples_per_sampler,
-                                                                                                         start_time, sampling_times, d_sum, kl_samples, time_to_subtract)
+                (episode_trajectory,
+                 last_obs, done, num_samples,
+                 not_added_index, time_to_subtract) = self.run_boss_sample(num_samples,
+                                                                           sample_lens,
+                                                                           sa_ind_samples,
+                                                                           sa_ind_derived_samples,
+                                                                           sa_ind_samples_per_sampler,
+                                                                           sampler_probability_map,
+                                                                           episode_num, weights_dict,
+                                                                           derived_weights_dict,
+                                                                           sa_ind_derived_samples_per_sampler,
+                                                                           start_time, sampling_times, d_sum,
+                                                                           kl_samples, time_to_subtract)
 
                 episode_trajectory.cull()
                 samples.append(episode_trajectory)
@@ -640,7 +656,8 @@ class OfflineController(MDPController, AbstractModuleFrame):
         else:
             return np.array(samples, dtype=object)
 
-    def eval_policy(self, num_episodes=25, use_eval_environment=False):
+    def eval_policy_boss(self,  sa_ind_samples, sa_ind_derived_samples, sa_ind_samples_per_sampler,
+                   sa_ind_derived_samples_per_sampler=None, sampler=None, num_episodes=25, use_eval_environment=False, return_len=False):
         """
         Learns a policy based on the samples and evaluates it.
         :return:
@@ -650,9 +667,36 @@ class OfflineController(MDPController, AbstractModuleFrame):
         elif not isinstance(self.asys.algorithm, LSPI):
             raise TypeError('LSPI is the only offline learning algorithm currently supported')
 
-        rewards = self.run_eval_samples(num_episodes, use_eval_environment)
+        rewards, len_traj = self.run_eval_samples_boss( sa_ind_samples, sa_ind_derived_samples,
+                                                   sa_ind_samples_per_sampler,
+                                                   sa_ind_derived_samples_per_sampler,
+                                                   sampler,
+                                                   num_episodes=num_episodes,
+                                                   use_eval_environment=use_eval_environment)
         self.after_run()
-        return rewards/num_episodes
+
+        if return_len:
+            return rewards / num_episodes, len_traj
+        else:
+            return rewards/num_episodes
+
+    def eval_policy(self, num_episodes=25):
+        """
+        Learns a policy based on the samples and evaluates it.
+        :return:
+        """
+        if hasattr(self.asys, 'hierarchy'):
+            raise TypeError('Hierarchical agent systems only supported for sampling')
+        elif not isinstance(self.asys.algorithm, LSPI):
+            raise TypeError('LSPI is the only offline learning algorithm currently supported')
+
+        rewards, len_traj = self.run_eval_samples()
+        self.after_run()
+
+        if return_len:
+            return rewards / num_episodes, len_traj
+        else:
+            return rewards/num_episodes
 
     def run_boss_sample(self, num_samples, sample_lens, sa_ind_samples, sa_ind_derived_samples,
                          sa_ind_samples_per_sampler, sampler_probability_map,
@@ -768,12 +812,17 @@ class OfflineController(MDPController, AbstractModuleFrame):
 
                 time_to_subtract += (time.perf_counter() - start_time2)
 
-                eval_time =self.eval_boss(sa_ind_samples,
-                                            sa_ind_derived_samples,
-                                            sa_ind_samples_per_sampler,
-                                            sa_ind_derived_samples_per_sampler,
-                                            weights_dict,
-                                            derived_weights_dict)
+                if self.is_etc and self.set_once:
+                    eval_time = self.eval_etc(sa_ind_samples,
+                                               sa_ind_derived_samples)
+
+                else:
+                    eval_time =self.eval_boss(sa_ind_samples,
+                                                sa_ind_derived_samples,
+                                                sa_ind_samples_per_sampler,
+                                                sa_ind_derived_samples_per_sampler,
+                                                weights_dict,
+                                                derived_weights_dict)
 
                 time_to_subtract += eval_time
                 collection_time = time.perf_counter() - start_time - time_to_subtract
@@ -851,6 +900,8 @@ class OfflineController(MDPController, AbstractModuleFrame):
         :param derived_weights_dict:
         :return:
         """
+        assert not (self.set_once and self.is_etc)
+
         episode_max_length = copy.copy(self.episode_max_length)
         self.rotate = False
 
@@ -863,29 +914,34 @@ class OfflineController(MDPController, AbstractModuleFrame):
         max_sampler_obj = None
         max_sampler_name = None
         current_samples = np.concatenate((sa_ind_samples, sa_ind_derived_samples))
+        time_to_subtract = 0
 
-        if 'BOSS' in self.sampler_policy_weights_dict:
+        if self.sampler_tag in self.sampler_policy_weights_dict:
             self.asys.policy_groups[0].policy.function_approximator.set_weights(
-                self.sampler_policy_weights_dict['BOSS'])
+                self.sampler_policy_weights_dict[self.sampler_tag])
 
         # # DO BOSS policy first
         self.asys.algorithm.learn(current_samples,
                                   self.asys.policy_groups,
                                   single_list=True,
-                                  sampler="BOSS")
+                                  sampler=self.sampler_tag)
 
-        reward = self.eval_policy(num_episodes=25, use_eval_environment=True)
-        self.sampler_policy_weights_dict["BOSS"] = self.asys.policy_groups[0].\
+        reward, traj_len = self.eval_policy_boss( sa_ind_samples, sa_ind_derived_samples, sa_ind_samples_per_sampler,
+                                             sa_ind_derived_samples_per_sampler=sa_ind_derived_samples_per_sampler,
+                                             sampler="BOSS", num_episodes=3,use_eval_environment=True, return_len=True)
+
+        self.sampling_len_lst.append(traj_len)
+        self.sampler_policy_weights_dict[self.sampler_tag] = self.asys.policy_groups[0].\
                                                                 policy.\
                                                                 function_approximator.\
                                                                 get_weights()
 
-        reward_dict["BOSS"] = reward
+        reward_dict[self.sampler_tag] = reward
 
-        if "BOSS" not in self.sampler_reward_dict:
-            self.sampler_reward_dict["BOSS"] = []
+        if self.sampler_tag not in self.sampler_reward_dict:
+            self.sampler_reward_dict[self.sampler_tag] = []
 
-        self.sampler_reward_dict["BOSS"].append(reward)
+        self.sampler_reward_dict[self.sampler_tag].append(reward)
 
         for sampler_name, obj in self.sampler.sampler_object_dict.items():
             if sampler_name in sa_ind_samples_per_sampler:
@@ -913,7 +969,12 @@ class OfflineController(MDPController, AbstractModuleFrame):
 
                     self.sampler_policy_weights_dict[sampler_name] = self.asys.policy_groups[0].policy.function_approximator.get_weights()
 
-                    reward, time_to_subtract = self.eval_and_time_boss()
+                    reward, time_to_subtract = self.eval_and_time_boss(sa_ind_samples,
+                                                                       sa_ind_derived_samples,
+                                                                       sa_ind_samples_per_sampler,
+                                                                       sa_ind_derived_samples_per_sampler=sa_ind_derived_samples_per_sampler,
+                                                                       sampler=sampler_name,
+                                                                       num_episodes=3)
                     reward_dict[sampler_name] = reward
                 else:
                     reward = self.sampler_reward_dict[sampler_name][-1]
@@ -922,9 +983,8 @@ class OfflineController(MDPController, AbstractModuleFrame):
                 ucb_multiplier = self.sampler.ucb_coef
                 upper_bound = ucb_multiplier * math.sqrt(((self.env.reward_range**2)
                                                           * math.log(0.005, 2))/
-                                                         (-2 * (max(self.sampler.sampler_occurance_dict[sampler_name] , .1))))
+                                                         (-2 * (max(self.sampler.sampler_occurance_dict[sampler_name], .1))))
                 ucb_dict[sampler_name] = reward + upper_bound
-
                 if ucb_dict[sampler_name] > max_sampler_ucb:
                     max_sampler_obj = obj
                     max_sampler_name = sampler_name
@@ -937,10 +997,70 @@ class OfflineController(MDPController, AbstractModuleFrame):
                 self.sampler_ucb_dict[sampler_name].append(ucb_dict[sampler_name])
 
         self._set_boss_sampler(max_sampler_obj, max_sampler_name)
+        self.set_once = True
+
         self.lens.append(num_samples)
-        self.rewards.append(reward_dict["BOSS"])
+        self.rewards.append(reward_dict[self.sampler_tag])
         self.episode_max_length = episode_max_length
         return time_to_subtract
+
+    def eval_etc(self, sa_ind_samples, sa_ind_derived_samples):
+        """
+
+        ::param sa_ind_samples: list of collected samples that have been converted to basis function s, s'
+        :param sa_ind_derived_samples: list of collected derived samples that have been converted to basis function s, s'
+        :param sa_ind_samples_per_sampler: a dictionary mapping each sampler to its list of collected samples
+        :param sa_ind_derived_samples_per_sampler: converted samples in dictionary for each sampler
+        :param weights_dict:
+        :param derived_weights_dict:
+        :return:
+        """
+        episode_max_length = copy.copy(self.episode_max_length)
+        self.rotate = False
+
+        reward_dict = {}
+        num_samples = len(sa_ind_samples)
+        current_samples = np.concatenate((sa_ind_samples, sa_ind_derived_samples))
+        time_to_subtract = 0
+
+        if self.sampler_tag in self.sampler_policy_weights_dict:
+            self.asys.policy_groups[0].policy.function_approximator.set_weights(
+                self.sampler_policy_weights_dict[self.sampler_tag])
+
+        # # DO BOSS policy first
+        self.asys.algorithm.learn(current_samples,
+                                  self.asys.policy_groups,
+                                  single_list=True,
+                                  sampler=self.sampler_tag)
+
+        reward = self.eval_policy(num_episodes=25, use_eval_environment=True)
+        self.sampler_policy_weights_dict[self.sampler_tag] = self.asys.policy_groups[0].\
+                                                                policy.\
+                                                                function_approximator.\
+                                                                get_weights()
+
+        reward_dict[self.sampler_tag] = reward
+
+        if self.sampler_tag not in self.sampler_reward_dict:
+            self.sampler_reward_dict[self.sampler_tag] = []
+
+        self.sampler_reward_dict[self.sampler_tag].append(reward)
+        self.etc_extend_samplers()
+
+        self.lens.append(num_samples)
+        self.rewards.append(reward_dict[self.sampler_tag])
+        self.episode_max_length = episode_max_length
+        return time_to_subtract
+
+
+    def etc_extend_samplers(self):
+        self.sampler_schedule_arr.append(self.sampler.current_sampler_name)
+        print('Selected:', self.sampler.current_sampler_name)
+        self.sampler.sampler_occurance_dict[self.sampler.current_sampler_name] += 1
+        for  k, v in self.sampler_reward_dict.items():
+            if k != self.sampler_tag:
+                self.sampler_reward_dict[k].append(v[-1])
+                self.sampler_ucb_dict[k].append(self.sampler_ucb_dict[k][-1])
 
     def convert_trajectory(self, samples, agent_id=0, last_obs=None):
         """
@@ -1174,13 +1294,16 @@ class OfflineController(MDPController, AbstractModuleFrame):
         time_to_convert = time.time() - start
         return sa_ind_samples, sa_ind_derived_samples, time_to_convert
 
-    def eval_and_time_boss(self):
+    def eval_and_time_boss(self, sa_ind_samples, sa_ind_derived_samples, sa_ind_samples_per_sampler,
+                           sa_ind_derived_samples_per_sampler, sampler="BOSS", num_episodes=3):
         """
         Evaluate all samples into the s, a, s' samples with basis function states
         :return:
         """
         start_time2 = time.perf_counter()
-        reward = self.eval_policy(num_episodes=25, use_eval_environment=True)
+        reward = self.eval_policy_boss(sa_ind_samples, sa_ind_derived_samples, sa_ind_samples_per_sampler,
+                                  sa_ind_derived_samples_per_sampler=sa_ind_derived_samples_per_sampler,
+                                  sampler=sampler, num_episodes=num_episodes, use_eval_environment=True)
         time_to_subtract = (time.perf_counter() - start_time2)
         return reward, time_to_subtract
 
@@ -1462,12 +1585,90 @@ class OfflineController(MDPController, AbstractModuleFrame):
         print('Runtimes', rt)
         print('rew', rew)
 
-    def run_eval_samples(self, num_episodes=25, use_eval_environment=False):
+    def run_eval_samples_boss(self, sa_ind_samples, sa_ind_derived_samples, sa_ind_samples_per_sampler,
+                        sa_ind_derived_samples_per_sampler=None, sampler=None, num_episodes=25, use_eval_environment=False, agent_id=0):
         """
         Evaluates the current policy on 100 exploit episodes
         :return:
         """
         rews = 0
+        time = 0
+        not_added_index = 0
+        done = True
+        for episode_num in range(num_episodes):
+            self.episode_num = episode_num
+            self.flags.exploit = True
+            self.flags.learn = False
+            self.before_episode()
+            episode_trajectory = self.run_episode(use_eval_environment=use_eval_environment)
+            episode_trajectory.cull()
+
+            observation_request = self.sampler.observe_request()
+            if use_eval_environment:
+                last_obs = self.evaluation_environment.observe(observation_request)
+            else:
+                last_obs = self.env.observe(observation_request)
+
+            converted_traj = self.convert_trajectory([episode_trajectory], last_obs=last_obs)[0].tolist()
+
+            mapped_s = self.map_all([converted_traj])[0]
+            evaluated_samples = self.eval_all_samples(mapped_s)
+
+            # self._check_sampler_distribution_macro(mapped_s)
+            sa_ind_samples.extend(evaluated_samples)
+
+            # if 'boss' not in sampler.lower():
+            #     if sampler not in sa_ind_samples_per_sampler:
+            #         sa_ind_samples_per_sampler[sampler] = evaluated_samples
+            #     else:
+            #         sa_ind_samples_per_sampler[sampler].extend(evaluated_samples)
+
+            observation_list = episode_trajectory.get_agent_trajectory(agent_id).observations.tolist()
+            observation_list.append(list(last_obs[agent_id]))
+
+            all_inhibited_s = []
+            all_abstracted_s = []
+
+            ## GENERATE Inhibited samples
+            if self.sampler.collect_inhibited and self.sampler.collect_abstract:
+                for ind, observation in enumerate(observation_list):
+                    if ind == len(observation_list) - 1:
+                        continue
+
+                    inhibited_s_arr = self.generate_inhibited_samples(observation, agent_id, observation_list[ind + 1])
+                    all_inhibited_s.append(inhibited_s_arr)
+
+                    primitive_action = mapped_s[ind][1]
+                    actual_action = self.get_action(primitive_action)
+                    policy_group = self.sampler.hierarchical_policy_dict[agent_id][actual_action]
+                    abstracted_s_arr = self.generate_abstract_samples(observation,
+                                                                      policy_group,
+                                                                      agent_id,
+                                                                      primitive_action,
+                                                                      observation_list[ind + 1],
+                                                                      -1)
+                    all_abstracted_s.append(abstracted_s_arr)
+
+                sa_inhibited_derived = self.eval_all_derived_samples(all_inhibited_s)
+                sa_abstract_derived = self.eval_all_derived_samples(all_abstracted_s)
+                sa_derived_inhibited_single = self._create_single_list(sa_inhibited_derived)
+                sa_derived_abstract_single = self._create_single_list(sa_abstract_derived)
+
+                sa_ind_derived_samples.extend(sa_derived_inhibited_single + sa_derived_abstract_single)
+
+            rews += episode_trajectory.get_agent_total_rewards()[0]
+            time += episode_trajectory.time
+        return rews, time
+
+    def run_eval_samples(self, num_episodes=25, use_eval_environment=False, agent_id=0):
+        """
+        Evaluates the current policy on 100 exploit episodes
+        :return:
+        """
+        rews = 0
+        time = 0
+        not_added_index = 0
+        done = True
         for episode_num in range(num_episodes):
             self.episode_num = episode_num
             self.flags.exploit = True
@@ -1476,7 +1677,8 @@ class OfflineController(MDPController, AbstractModuleFrame):
             episode_trajectory = self.run_episode(use_eval_environment=use_eval_environment)
             episode_trajectory.cull()
             rews += episode_trajectory.get_agent_total_rewards()[0]
-        return rews
+            time += episode_trajectory.time
+        return rews, time
 
     def extend_sa_derived_samples(self, single_episode_derived, sa_ind_derived_samples_per_sampler,
                                   sa_ind_derived_samples, not_added_index, single_weights_dict=None,
@@ -1499,7 +1701,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
             temp_sa_der_samples = self.eval_all_derived_samples(single_episode_derived)
 
         for k, v in self.sampler_ind_dict.items():
-            if k not in sa_ind_derived_samples_per_sampler:
+            if not sa_ind_derived_samples_per_sampler or k not in sa_ind_derived_samples_per_sampler:
                 sa_ind_derived_samples_per_sampler[k] = []
 
             for slice in v:
@@ -1582,7 +1784,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
         h_obs_domain = {}
         for action in hierarchy.actions:
             if not hierarchy.actions[action]['primitive']:
-                if self.config.environment.name == "BitFlip":
+                if self.config.environment.name == "BitFlip" or self.config.environment.name == "BitFlipMiddle":
                     h_obs_domain[action] = self.env.abstracted_observation_domain(hierarchy.actions[action]['state_variables'],
                                                                                  action)
                 else:
@@ -1784,7 +1986,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
         helper function for check distribution
         """
         if self.sampler.check_dist:
-            k = "BOSS"
+            k = self.sampler_tag
             x = self._check_sample_distribution(mapped_s)
             if k not in self.sampler.sampler_dist_dict:
                 self.sampler.sampler_dist_dict[k] = x
@@ -1798,7 +2000,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
 
     def _write_sample_distribution(self, iteration=1):
 
-        if self.config.sampler.name == "BOSS" and self.sampler.check_dist:
+        if (self.config.sampler.name == "BOSS" or self.is_etc) and self.sampler.check_dist:
             with open("sample_dist" + str(iteration) + ".txt", 'w') as f:
                 for key, value in self.sampler.sampler_dist_dict.items():
                     f.write('%s:%s\n' % (key, value))
@@ -2015,6 +2217,97 @@ class OfflineController(MDPController, AbstractModuleFrame):
             self._display_arrays()
             print(fraction_array)
 
+    def generate_inhibited_samples(self, observation, agent_id, s_prime):
+        """
+        Generates inhibited action samples, or samples that set the reward of taking an illegal action (from hierarchy)
+        to a large negative number
+
+        Only does it for the current observation, not for a list of samples as proposed in Devin's thesis
+
+        :param observation: current observation
+        :param agent_id: current agent_id
+        :return:
+        """
+        # root_pg = self.sampler.completion_function_pg[agent_id]['Root']
+        inhibited_s_arr = []
+
+        policy = self.asys.policy_groups[0].policy
+        domain_obs = policy.domain_obs
+        mapped_obs = self._map_table_indices(observation, domain_obs)
+        mapped_s_prime = self._map_table_indices(s_prime, domain_obs)
+
+        inhibited_index = self.sampler.inhibited_actions_basis.get_state_action_index(mapped_obs, 0)
+
+        # Uses the previously found non-reachable primitives if this state has been tested
+        if self.sampler.inhibited_actions_arr[inhibited_index] is None:
+            non_term_prim, reachable_subtasks = self.sampler.get_all_reachable_non_term_actions(observation, "Root",
+                                                                                        agent_id)
+
+            term_prim = [i for i in self.sampler.primitive_action_map.keys() if i not in non_term_prim]
+            self.sampler.inhibited_actions_arr[inhibited_index] = (term_prim, reachable_subtasks)
+        else:
+            [term_prim, _] = self.sampler.inhibited_actions_arr[inhibited_index]
+
+        blocked_acts = term_prim
+
+        for inhibited_action in blocked_acts:
+            prim_action = self.sampler.primitive_action_map[inhibited_action]
+            inhibited_samples = [mapped_obs, np.asarray([prim_action]), self.sampler.min_reward, mapped_s_prime]
+            inhibited_s_arr.append(inhibited_samples)
+
+        return inhibited_s_arr
+
+    def get_action(self, primitive_action):
+        for k,v in self.sampler.primitive_action_map.items():
+            if v == primitive_action:
+                return k
+
+        raise ValueError('Cannot find action')
+
+    def generate_abstract_samples(self, observation, policy_group, agent_id, primitive_action, s_prime, reward, current_node="Root"):
+        """
+        Generates abstract samples by changing the values of state variables that
+        the hierarchy determines are irrelevant
+
+        :param observation: Current (full) observation
+        :param policy_group: current policy group
+        :param agent_id: agent-id for policy group
+        :param primitive_action: primitive action of sample
+        :return:
+        """
+        # if self.display_distribution and self.add_derived:
+        root_pg = self.sampler.completion_function_pg[agent_id]['Root']
+        state_list, s_prime_list = self.sampler.get_irrelevant_states(observation, policy_group, agent_id, s_prime)
+        abstract_samples_l = []
+        policy = self.asys.policy_groups[0].policy
+        domain_obs = policy.domain_obs
+        # inhibited_actions_l = []
+        for ind, state in enumerate(state_list):
+            mapped_obs = self._map_table_indices(state, domain_obs)
+            mapped_s_prime = self._map_table_indices(s_prime_list[ind], domain_obs)
+            sample = [mapped_obs, np.asarray(primitive_action), reward, mapped_s_prime]
+            abstract_samples_l.append(sample)
+
+            # generate inhibited from abstract
+            if self.sampler.collect_inhibited and self.sampler.collect_abstract:
+                inhibited_index = self.sampler.inhibited_actions_basis.get_state_action_index(mapped_obs, 0)
+
+                # Uses the previously found non-reachable primitives if this state has been tested
+                if self.sampler.inhibited_actions_arr[inhibited_index] is None:
+                    non_term_prim, reachable_subtasks = self.sampler.get_all_reachable_non_term_actions(state, "Root",
+                                                                                                        agent_id)
+                    # print(non_term_prim, reachable_subtasks, mapped_obs, inhibited_index)
+                    term_prim = [i for i in self.sampler.primitive_action_map.keys() if i not in non_term_prim]
+                    self.sampler.inhibited_actions_arr[inhibited_index] = (term_prim, reachable_subtasks)
+                else:
+                    [term_prim, _] = self.sampler.inhibited_actions_arr[inhibited_index]
+
+                for inhibited_action in term_prim:
+                    prim_action = self.sampler.primitive_action_map[inhibited_action]
+                    inhibited_samples = [mapped_obs, np.asarray([prim_action]), self.sampler.min_reward, mapped_s_prime]
+                    abstract_samples_l.append(inhibited_samples)
+
+        return abstract_samples_l
 
 class ControllerFlags(object):
 

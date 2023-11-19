@@ -55,7 +55,11 @@ class FeatureConversions(object):
                 raise ValueError("[{}] is a sparse coordinate feature but the value was not in its set."
                                  .format(feature.name))
             else:
-                offset = sliced_data - feature.lower
+                offset = []
+                for ind, i in enumerate(sliced_data):
+                    offset.append(i - feature.lower[ind])
+
+                # offset = sliced_data - feature.lower
                 stride = 1
                 idx = 0
                 for dim, val in zip(feature.region_dims[::-1], offset[::-1]):

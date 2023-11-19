@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
         is_boss = hasattr(config, "sampler") and config.sampler.name == 'BOSS'
 
-        if hasattr(config, 'samples_name') and config.samples_name is not '':
+        if hasattr(config, 'samples_name') and config.samples_name != '':
             save_name = config.samples_name
         else:
             raise ValueError('No Name In Config File')
