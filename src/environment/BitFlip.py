@@ -52,6 +52,11 @@ class BitFlip(HierarchicalEnvironment):
                            info='Should a badflip reset the state?',
                            optional=True,
                            default=False),
+            ConfigItemDesc(name="exp_penalty",
+                           check=boolean_check,
+                           info='Is penalty exponential?',
+                           optional=True,
+                           default=False),
         ]
 
     @classmethod
@@ -72,6 +77,8 @@ class BitFlip(HierarchicalEnvironment):
 
         self.use_penalty = False
         self.small_penalty = False
+
+        self.exp_penalty = config.exp_penalty if hasattr(config, 'exp_penalty') else False
 
         self.n = 1
         self.num_bits = int(config.num_bits)
@@ -105,6 +112,7 @@ class BitFlip(HierarchicalEnvironment):
         self.derived_hierarchical_observation_domain = None
 
         self.eval = False
+        self.resets = 0
 
     def load_hierarchy(self, action_hierarchy):
         self._flat = False
@@ -220,7 +228,11 @@ class BitFlip(HierarchicalEnvironment):
             i = self.num_bits - action
 
             bad_flip = False
-            reward = -1 * 2 * i
+            if self.exp_penalty:
+                reward = -1 * (2 ** i)
+            else:
+                reward = -1 * 2 * i
+            # reward = -1 * (2 ** i)
 
             # Check state (to left of i)
             for j in range(action):
@@ -235,6 +247,8 @@ class BitFlip(HierarchicalEnvironment):
             # bad_flip = False
             if bad_flip:
                 index_1 = 0 # Full penalty
+                self.resets += 1
+                # print("resets: ", self.resets)
 
                 self.state_val[index_1:action + 1] = [1 for i in range(index_1, action + 1)]
             # Flip bit

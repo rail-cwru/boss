@@ -62,5 +62,7 @@ class BitFlipMiddle(BitFlip):
             rewards[agent] = reward
         if np.count_nonzero(self.state_val) == 0:
             self.done = True
+            reward = 50
+            rewards[agent] = reward
             self.eval = False
         return rewards
