@@ -657,7 +657,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
             return np.array(samples, dtype=object)
 
     def eval_policy_boss(self,  sa_ind_samples, sa_ind_derived_samples, sa_ind_samples_per_sampler,
-                   sa_ind_derived_samples_per_sampler=None, sampler=None, num_episodes=25, use_eval_environment=False, return_len=False):
+                        sa_ind_derived_samples_per_sampler=None, sampler=None, num_episodes=25, use_eval_environment=False, return_len=False):
         """
         Learns a policy based on the samples and evaluates it.
         :return:
@@ -1603,58 +1603,59 @@ class OfflineController(MDPController, AbstractModuleFrame):
             episode_trajectory = self.run_episode(use_eval_environment=use_eval_environment)
             episode_trajectory.cull()
 
-            observation_request = self.sampler.observe_request()
-            if use_eval_environment:
-                last_obs = self.evaluation_environment.observe(observation_request)
-            else:
-                last_obs = self.env.observe(observation_request)
+            if sampler.lower() != "boss":
+                observation_request = self.sampler.observe_request()
+                if use_eval_environment:
+                    last_obs = self.evaluation_environment.observe(observation_request)
+                else:
+                    last_obs = self.env.observe(observation_request)
 
-            converted_traj = self.convert_trajectory([episode_trajectory], last_obs=last_obs)[0].tolist()
+                converted_traj = self.convert_trajectory([episode_trajectory], last_obs=last_obs)[0].tolist()
 
-            mapped_s = self.map_all([converted_traj])[0]
-            evaluated_samples = self.eval_all_samples(mapped_s)
+                mapped_s = self.map_all([converted_traj])[0]
+                evaluated_samples = self.eval_all_samples(mapped_s)
 
-            # self._check_sampler_distribution_macro(mapped_s)
-            sa_ind_samples.extend(evaluated_samples)
+                # self._check_sampler_distribution_macro(mapped_s)
+                sa_ind_samples.extend(evaluated_samples)
 
-            # if 'boss' not in sampler.lower():
-            #     if sampler not in sa_ind_samples_per_sampler:
-            #         sa_ind_samples_per_sampler[sampler] = evaluated_samples
-            #     else:
-            #         sa_ind_samples_per_sampler[sampler].extend(evaluated_samples)
+                # if 'boss' not in sampler.lower():
+                #     if sampler not in sa_ind_samples_per_sampler:
+                #         sa_ind_samples_per_sampler[sampler] = evaluated_samples
+                #     else:
+                #         sa_ind_samples_per_sampler[sampler].extend(evaluated_samples)
 
-            observation_list = episode_trajectory.get_agent_trajectory(agent_id).observations.tolist()
-            observation_list.append(list(last_obs[agent_id]))
+                observation_list = episode_trajectory.get_agent_trajectory(agent_id).observations.tolist()
+                observation_list.append(list(last_obs[agent_id]))
 
-            all_inhibited_s = []
-            all_abstracted_s = []
+                all_inhibited_s = []
+                all_abstracted_s = []
 
-            ## GENERATE Inhibited samples
-            if self.sampler.collect_inhibited and self.sampler.collect_abstract:
-                for ind, observation in enumerate(observation_list):
-                    if ind == len(observation_list) - 1:
-                        continue
+                ## GENERATE Inhibited samples
+                if self.sampler.collect_inhibited and self.sampler.collect_abstract:
+                    for ind, observation in enumerate(observation_list):
+                        if ind == len(observation_list) - 1:
+                            continue
 
-                    inhibited_s_arr = self.generate_inhibited_samples(observation, agent_id, observation_list[ind + 1])
-                    all_inhibited_s.append(inhibited_s_arr)
+                        inhibited_s_arr = self.generate_inhibited_samples(observation, agent_id, observation_list[ind + 1])
+                        all_inhibited_s.append(inhibited_s_arr)
 
-                    primitive_action = mapped_s[ind][1]
-                    actual_action = self.get_action(primitive_action)
-                    policy_group = self.sampler.hierarchical_policy_dict[agent_id][actual_action]
-                    abstracted_s_arr = self.generate_abstract_samples(observation,
-                                                                      policy_group,
-                                                                      agent_id,
-                                                                      primitive_action,
-                                                                      observation_list[ind + 1],
-                                                                      -1)
-                    all_abstracted_s.append(abstracted_s_arr)
+                        primitive_action = mapped_s[ind][1]
+                        actual_action = self.get_action(primitive_action)
+                        policy_group = self.sampler.hierarchical_policy_dict[agent_id][actual_action]
+                        abstracted_s_arr = self.generate_abstract_samples(observation,
+                                                                          policy_group,
+                                                                          agent_id,
+                                                                          primitive_action,
+                                                                          observation_list[ind + 1],
+                                                                          -1)
+                        all_abstracted_s.append(abstracted_s_arr)
 
-                sa_inhibited_derived = self.eval_all_derived_samples(all_inhibited_s)
-                sa_abstract_derived = self.eval_all_derived_samples(all_abstracted_s)
-                sa_derived_inhibited_single = self._create_single_list(sa_inhibited_derived)
-                sa_derived_abstract_single = self._create_single_list(sa_abstract_derived)
+                    sa_inhibited_derived = self.eval_all_derived_samples(all_inhibited_s)
+                    sa_abstract_derived = self.eval_all_derived_samples(all_abstracted_s)
+                    sa_derived_inhibited_single = self._create_single_list(sa_inhibited_derived)
+                    sa_derived_abstract_single = self._create_single_list(sa_abstract_derived)
 
-                sa_ind_derived_samples.extend(sa_derived_inhibited_single + sa_derived_abstract_single)
+                    sa_ind_derived_samples.extend(sa_derived_inhibited_single + sa_derived_abstract_single)
 
             rews += episode_trajectory.get_agent_total_rewards()[0]
             time += episode_trajectory.time
