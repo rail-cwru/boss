@@ -41,6 +41,7 @@ class ResultsManager():
         self.rt_arr = []
         self.times = []
         self.cummax_arr = []
+        self.traj_len = []
 
         self.kl_divergences = []
         self.kl_lens = []
@@ -55,8 +56,6 @@ class ResultsManager():
         self.boss_cum_ucb_dict = {}
         self.offline = offline
         self.boss_schedule_list = []
-
-
         self.dir_name = None
 
 
@@ -70,7 +69,6 @@ class ResultsManager():
 
         if self.offline:
             self.append_offline_results(controller, config.kl_divergence)
-
 
         if controller.save_traj:
             self.append_trajectories(controller)
@@ -113,6 +111,9 @@ class ResultsManager():
             self.derived_arr.append(controller.derived_samples)
             self.rt_arr.append(controller.rt)
 
+            if hasattr(controller, "sampling_len_lst"):
+                self.traj_len.append(controller.sampling_len_lst)
+
             if kl:
                 self.kl_divergences.append(controller.kl_divergences)
                 self.kl_lens.append(controller.kl_lens)
@@ -122,6 +123,9 @@ class ResultsManager():
 
     def append_all_averages(self, controller):
         self.eval_arr.append(controller.callbacks[0].all_averages)
+        # for i in self.eval_arr:
+            # print([x for x in np.maximum.accumulate(i)])
+        self.cummax_arr.append([x for x in np.maximum.accumulate(self.eval_arr[-1])])
 
     def append_times(self, time):
         self.times.append(time)
@@ -168,15 +172,31 @@ class ResultsManager():
     def append_boss(self, controller):
         for k, v in controller.sampler_reward_dict.items():
 
-            if k is not 'BOSS':
+            if k not in ['BOSS', 'ETC']:
                 # print(k, 'Rewards', v)
+
+                if k not in self.boss_rew_dict:
+                    self.boss_rew_dict[k] = []
+                if k not in self.boss_cum_rew_dict:
+                    self.boss_cum_rew_dict[k] = []
+
+                if k not in self.boss_ucb_dict:
+                    self.boss_ucb_dict[k] = []
+
+                if k not in self.boss_cum_ucb_dict:
+                    self.boss_cum_ucb_dict[k] = []
+
                 self.boss_rew_dict[k].append(v)
                 self.boss_ucb_dict[k].append(controller.sampler_ucb_dict[k])
                 # print(k, 'UCB:', controller.sampler_ucb_dict[k])
                 print('UCB', k, ':')
                 for i in self.boss_ucb_dict[k]:
                     cum_ucb = [x for x in np.maximum.accumulate(i)]
-                    self.boss_cum_ucb_dict[k].append(cum_ucb)
+
+                    if k in self.boss_cum_ucb_dict and self.boss_cum_ucb_dict[k]:
+                        self.boss_cum_ucb_dict[k].append(cum_ucb)
+                    else:
+                        self.boss_cum_ucb_dict[k] = [cum_ucb]
                     print(cum_ucb)
                     # print(cum_ucb)
                 print('Rewards', k, ':')
@@ -189,7 +209,6 @@ class ResultsManager():
         print('Schedule:')
         for i in self.boss_schedule_list:
             print(i)
-
 
     def plot_boss(self, controller, iteration):
         linestyle_tuple = [
@@ -211,7 +230,7 @@ class ResultsManager():
 
         count = 0
         for k, v in controller.sampler_reward_dict.items():
-            if k is not "BOSS":
+            if k not in ["BOSS", 'ETC']:
                 plt.plot(self.len_arr[-1], self.boss_ucb_dict[k][-1], label=k,
                          linestyle=linestyle_tuple[count][-1])
                 count += 1
@@ -225,12 +244,12 @@ class ResultsManager():
         plt.savefig('UCB_' + str(iteration) + '.png')
 
         os.chdir('..')
-        self.boss_rew_dict["BOSS"].append(controller.sampler_reward_dict['BOSS'])
+        self.boss_rew_dict[controller.sampler_tag].append(controller.sampler_reward_dict[controller.sampler_tag])
 
         print('Rewards', "Boss", ':')
-        for i in self.boss_rew_dict["BOSS"]:
+        for i in self.boss_rew_dict[controller.sampler_tag]:
             cum_ucb = [x for x in np.maximum.accumulate(i)]
-            self.boss_cum_rew_dict["BOSS"].append(cum_ucb)
+            self.boss_cum_rew_dict[controller.sampler_tag].append(cum_ucb)
             print(cum_ucb)
 
         count = 0
@@ -272,7 +291,7 @@ class ResultsManager():
         plt.clf()
         count = 0
         for k, v in controller.sampler_reward_dict.items():
-            if k is not "BOSS":
+            if k not in ["BOSS", "ETC"]:
                 plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.boss_ucb_dict[k], axis=0), label=k,
                          linestyle=linestyle_tuple[count][-1])
                 count += 1
@@ -286,7 +305,7 @@ class ResultsManager():
 
         ## Plot each sampler:
         for k, v in controller.sampler_reward_dict.items():
-            if k is not "BOSS":
+            if k  not in  ["BOSS", 'ETC']:
                 plt.clf()
 
                 plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.boss_ucb_dict[k], axis=0), label='UCB',
@@ -319,7 +338,7 @@ class ResultsManager():
 
         count = 0
         for k, v in controller.sampler_reward_dict.items():
-            if k is not "BOSS":
+            if k not in ["BOSS", 'ETC']:
                 plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.boss_ucb_dict[k], axis=0), label=k,
                          linestyle=linestyle_tuple[count][-1])
                 count += 1
@@ -333,7 +352,7 @@ class ResultsManager():
 
         ## Plot each sampler:
         for k, v in controller.sampler_reward_dict.items():
-            if k is not "BOSS":
+            if k not in ["BOSS", 'ETC']:
                 plt.clf()
 
                 plt.plot(np.mean(self.len_arr, axis=0), np.mean(self.boss_ucb_dict[k], axis=0), label='UCB',
@@ -425,7 +444,7 @@ class ResultsManager():
 
             for i in self.eval_arr:
                 print([x for x in np.maximum.accumulate(i)])
-                self.cummax_arr.append([x for x in np.maximum.accumulate(i)])
+            self.cummax_arr.append([x for x in np.maximum.accumulate(self.eval_arr[-1])])
 
             print('Derived Samples:')
             for i in self.derived_arr:
@@ -434,6 +453,11 @@ class ResultsManager():
             print("times:")
             for i in self.times:
                 print(i)
+
+            if len(self.traj_len) > 0:
+                print('Trajectory Lengths, Boss')
+                for i in self.traj_len:
+                    print(i)
 
     def _display_kl(self, target_entropy):
         """
@@ -514,6 +538,9 @@ class ResultsManager():
                 self.save_list(self.boss_rew_dict[k], k + '_rew_', save_name)
                 self.save_list(self.boss_ucb_dict[k], k + '_ucb_', save_name)
                 self.save_list(self.boss_ucb_dict[k], k + '_ucb_', save_name)
+
+            if len(self.traj_len) > 0:
+                self.save_list(self.traj_len, "traj_lens_boss", save_name)
 
         if controller.save_traj:
             print('Trajectories:')
