@@ -928,7 +928,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
 
         reward, traj_len = self.eval_policy_boss( sa_ind_samples, sa_ind_derived_samples, sa_ind_samples_per_sampler,
                                              sa_ind_derived_samples_per_sampler=sa_ind_derived_samples_per_sampler,
-                                             sampler="BOSS", num_episodes=3,use_eval_environment=True, return_len=True)
+                                             sampler="BOSS", num_episodes=10,use_eval_environment=True, return_len=True)
 
         self.sampling_len_lst.append(traj_len)
         self.sampler_policy_weights_dict[self.sampler_tag] = self.asys.policy_groups[0].\
