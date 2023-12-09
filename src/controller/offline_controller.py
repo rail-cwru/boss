@@ -585,7 +585,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
             self.asys.algorithm.learn(current_samples, self.asys.policy_groups, single_list=single_list)
             end = time.time()
 
-            current_reward = self.eval_policy(25)
+            current_reward = self.eval_policy(25, return_len=False)
             if add_times:
                 samples_ratio = min(i/self.samples_target, 1)
                 time_to_app = end - start + samples_ratio * add_times[-1] + samples_ratio * time_to_convert
@@ -680,7 +680,7 @@ class OfflineController(MDPController, AbstractModuleFrame):
         else:
             return rewards/num_episodes
 
-    def eval_policy(self, num_episodes=25):
+    def eval_policy(self, num_episodes=25, return_len=False):
         """
         Learns a policy based on the samples and evaluates it.
         :return:
